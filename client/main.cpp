@@ -9,10 +9,19 @@
 #include <Ogre.h>
 #include <OgreApplicationContext.h>
 #include <OgreInput.h>
+#include <enet/enet.h>
+#include <iostream>
+#include <source/structure/Chunk.h>
+#include <source/structure/Structure.h>
 
 #include "qu3e/q3.h"
 
-#include "include/cube.h"
+#include "source/rendering/RenderedStructure.h"
+
+#include "source/cube.h"
+
+#include "source/structure/Dirty.h"
+#include "source/ecs/Ecs.h"
 
 
 inline Ogre::Vector3 to(const q3::q3Vec3& v)
@@ -53,11 +62,11 @@ public:
 	
 	MyTestApp();
 	
-	void setup();
+	void setup() override;
 	
-	bool keyPressed(const OgreBites::KeyboardEvent &evt);
+	bool keyPressed(const OgreBites::KeyboardEvent &evt) override;
 	
-	bool keyReleased(const OgreBites::KeyboardEvent &evt);
+	bool keyReleased(const OgreBites::KeyboardEvent &evt) override;
 	
 	void updateInput();
 	
@@ -157,57 +166,74 @@ void MyTestApp::setup(void)
 	getRenderWindow()->addViewport(cam);
 	
 	// ADD PHYSICS STUFF
-	using namespace q3;
-	
-	q3::q3BodyDef bdef;
-	bdef.position = q3::q3Vec3(0, 10, -20);
-	bdef.bodyType = q3::eDynamicBody;
-	
-	
-	q3::q3BodyDef plane;
-	plane.position = q3::q3Vec3(2.5, -10, -20);
-	plane.bodyType = q3::eStaticBody;
-	
-	mainBody = scene.CreateBody(bdef);
-	planeBody = scene.CreateBody(plane);
-	
-	q3::q3BoxDef boxDef;
-	q3Transform trans;
-	trans.position.Set(0, 0, 0);
-	trans.rotation.Set(1, 0, 0, 0, 1, 0, 0, 0, 1);
-	boxDef.Set(trans, {1, 1, 1});
-	boxDef.SetRestitution(0.1);
-	mainBody->AddBox(boxDef);
-	
-	q3Transform trans2;
-	trans2.position.Set(0, 0, 0);
-	trans2.rotation.Set(1, 0, 0, 0, 1, 0, 0, 0, 1);
-	q3::q3BoxDef planeBox;
-	planeBox.Set(trans2, {5, 5, 5});
-	planeBox.SetRestitution(0.1);
-	planeBody->AddBox(planeBox);
-	
+	{
+		using namespace q3;
+		
+		q3::q3BodyDef bdef;
+		bdef.position = q3::q3Vec3(0, 10, -20);
+		bdef.bodyType = q3::eDynamicBody;
+		
+		
+		q3::q3BodyDef plane;
+		plane.position = q3::q3Vec3(2.5f, -10, -20);
+		plane.bodyType = q3::eStaticBody;
+		
+		mainBody = scene.CreateBody(bdef);
+		planeBody = scene.CreateBody(plane);
+		
+		q3::q3BoxDef boxDef;
+		q3Transform trans;
+		trans.position.Set(0, 0, 0);
+		trans.rotation.Set(1, 0, 0, 0, 1, 0, 0, 0, 1);
+		boxDef.Set(trans, {1, 1, 1});
+		boxDef.SetRestitution(0.1);
+		mainBody->AddBox(boxDef);
+		
+		q3Transform trans2;
+		trans2.position.Set(0, 0, 0);
+		trans2.rotation.Set(1, 0, 0, 0, 1, 0, 0, 0, 1);
+		q3::q3BoxDef planeBox;
+		planeBox.Set(trans2, {5, 5, 5});
+		planeBox.SetRestitution(0.1);
+		planeBody->AddBox(planeBox);
+	}
 	
 	
 	
 	// finally something to render
 	
-	Ogre::ManualObject *man = scnMgr->createManualObject("test_obj");
-	man->begin("Examples/OgreLogo", Ogre::RenderOperation::OT_TRIANGLE_LIST);
-	
 	CosmosRendering::Cube cube;
 	
-	cube.addBottom(*man,
-				   cube.addTop(*man,
-							   cube.addRight(*man,
-											 cube.addLeft(*man,
-														  cube.addBack(*man,
-																	   cube.addFront(*man, 0))))));
+	// yes this leaks memory
+	Cosmos::Rendering::RenderedStructure* rs = new Cosmos::Rendering::RenderedStructure(*scnMgr);
 	
-	man->end();
-	
-	node = scnMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
-	node->attachObject(man);
+//	rs.updateNoGL();
+//	rs.updateGL();
+//
+//	node = rs.addToScene();
+//
+//	if(!node)
+//	{
+//		throw ":(";
+//	}
+
+//	man->begin("Examples/OgreLogo", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+//
+//
+//	cube.addBottom(*man,
+//				   cube.addTop(*man,
+//							   cube.addRight(*man,
+//											 cube.addLeft(*man,
+//														  cube.addBack(*man,
+//																	   cube.addFront(*man, 0))))));
+//
+//	man->end();
+	rs->updateNoGL();
+	rs->updateGL();
+
+//	node = rs.m_scnMgr.getRootSceneNode()->createChildSceneNode(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
+	node = rs->addToScene();
+
 	
 	Ogre::ManualObject *man2 = scnMgr->createManualObject("test_obj_2");
 	
@@ -244,8 +270,47 @@ void MyTestApp::setup(void)
 //	scene.Shutdown();
 //}
 
+//#define TESTING
+
+#ifdef TESTING
+
+#include "tests/TestECS.h"
+
+int main()
+{
+	testMain();
+}
+
+#else
+
+int main()
+{
+	using namespace Cosmos;
+	
+	ECSWorld world;
+	
+	Entity* structEnt = world.createEntity();
+	
+	structEnt->addComponent(new Structure(10, 10, 10, structEnt));
+	
+	world.query(HasQuery(Chunk::STATIC_ID()), [](auto world, auto entity)
+	{
+		auto x = entity.getComponents(Chunk::STATIC_ID());
+		for(Component* c : x)
+		{
+			printf("%i\n", c->entityShouldDelete());
+		}
+		printf("%u count\n", (unsigned int) x.size());
+		printf("Found chunks!!\n");
+	});
+	
+	world.destroyEntity(structEnt);
+}
+#endif
+
+
 //! [main]
-int main(int argc, char *argv[])
+int main21(int argc, char *argv[])
 {
 	MyTestApp app;
 	app.initApp();
@@ -270,9 +335,11 @@ int main(int argc, char *argv[])
 		
 		app.scene.Step();
 		
-		app.node->setPosition(to(app.mainBody->GetTransform().position));
-		app.node->setOrientation( toQuat(app.mainBody->GetTransform().rotation));
-		
+		if(app.node && app.mainBody)
+		{
+			app.node->setPosition(to(app.mainBody->GetTransform().position));
+			app.node->setOrientation(toQuat(app.mainBody->GetTransform().rotation));
+		}
 //		if (app.keyJustDown('w'))
 //		{
 ////			app.node->setPosition(app.node->getPosition() + Ogre::Vector3(0, 0, 0.1));
@@ -291,3 +358,22 @@ int main(int argc, char *argv[])
 	return 0;
 }
 //! [main]
+
+int main33()
+{
+	ENetHost* client;
+	
+	// NULL = client host
+	client = enet_host_create(NULL, 1, 8, 0, 0);
+	
+	if(!client)
+	{
+		std::cerr << "Unable to create enet client host." << std::endl;
+		return EXIT_FAILURE;
+	}
+	
+	
+	enet_host_destroy(client);
+	
+	return 0;
+}

@@ -1,7 +1,7 @@
 //
 // Created by cornchip on 4/28/22.
 //
-#include "../include/cube.h"
+#include "cube.h"
 
 #include <OgreManualObject.h>
 
