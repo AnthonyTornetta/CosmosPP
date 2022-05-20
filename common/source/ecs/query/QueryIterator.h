@@ -1,0 +1,8 @@
+//
+// Created by cornchip on 5/18/22.
+//
+
+#ifndef COSMOSCLIENT_QUERYITERATOR_H
+#define COSMOSCLIENT_QUERYITERATOR_H
+
+#endif //COSMOSCLIENT_QUERYITERATOR_H
