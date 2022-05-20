@@ -290,19 +290,40 @@ int main()
 	ECSWorld world;
 	
 	Entity* structEnt = world.createEntity();
+	//Entity* e2 = world.createEntity();
 	
-	structEnt->addComponent(new Structure(10, 10, 10, structEnt));
+	//e2->addComponent(new Chunk());
 	
-	world.query(HasQuery(Chunk::STATIC_ID()), [](auto world, auto entity)
+	structEnt->addComponent(new Chunk());
+	
+	//structEnt->addComponent(new Structure(10, 10, 10, structEnt));
+	
+	world.addSystem(new ConstSystem(new HasQuery(Chunk::STATIC_ID()), [](const ECSWorld& world, ConstQueryIterator itr)
 	{
-		auto x = entity.getComponents(Chunk::STATIC_ID());
-		for(Component* c : x)
+		printf("SYSTEM RAN\n");
+		
+		for(const Entity* ent : itr)
 		{
-			printf("%i\n", c->entityShouldDelete());
+			printf("FOUND AN ENTITY\n");
 		}
-		printf("%u count\n", (unsigned int) x.size());
-		printf("Found chunks!!\n");
-	});
+	
+//		auto x = entity.getComponents(Chunk::STATIC_ID());
+//		printf("%u count\n", (unsigned int) x.size());
+//		printf("Found chunks!!\n");
+	}));
+	
+	world.addMutSystem(new MutSystem (new HasQuery(Chunk::STATIC_ID()), [](ECSWorld& world, MutQueryIterator itr)
+	{
+		for(Entity* x : itr)
+		{
+			printf("MUT FOUND AN ENTITY\n");
+		}
+	}));
+	
+	for(int i = 0; i < 10; i++)
+	{
+		world.runSystems();
+	}
 	
 	world.destroyEntity(structEnt);
 }

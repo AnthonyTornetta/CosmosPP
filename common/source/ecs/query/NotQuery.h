@@ -15,8 +15,11 @@ namespace Cosmos
 		
 	public:
 		explicit NotQuery(Query *actual, Query* next = nullptr);
-		~NotQuery();
+		~NotQuery() override;
 		
-		[[nodiscard]] virtual bool evaluate(const Entity& entity) const;
+		NotQuery* clone() const override;
+		
+	protected:
+		[[nodiscard]] bool evaluate(const Entity& entity) const override;
 	};
 }

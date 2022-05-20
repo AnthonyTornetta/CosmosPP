@@ -19,6 +19,11 @@ namespace Cosmos
 	
 	bool NotQuery::evaluate(const Entity &entity) const
 	{
-		return !m_actual->evaluate(entity);
+		return !m_actual->execute(entity);
+	}
+	
+	NotQuery *NotQuery::clone() const
+	{
+		return new NotQuery(m_actual->clone(), next()->clone());
 	}
 }

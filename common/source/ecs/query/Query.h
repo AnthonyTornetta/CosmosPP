@@ -15,15 +15,21 @@ namespace Cosmos
 		
 	public:
 		explicit Query(Query* next = nullptr): m_next(next) {}
-		~Query() = default;
+		virtual ~Query()
+		{
+			delete m_next;
+		}
+		
+		virtual Query* clone() const = 0;
 		
 		bool execute(const Entity& entity) const;
 		
-		virtual bool evaluate(const Entity& entity) const = 0;
-		
-		Query* next()
+		const Query* next() const
 		{
 			return m_next;
 		}
+	
+	protected:
+		virtual bool evaluate(const Entity& entity) const = 0;
 	};
 }

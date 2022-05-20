@@ -5,14 +5,32 @@
 #include "Entity.h"
 
 #include <cassert>
+#include <cstdio>
 
 namespace Cosmos
 {
 	Entity::~Entity()
 	{
-		for (auto c: m_componentsVec)
-			if(c->entityShouldDelete())
-				delete c;
+		while(m_componentsVec.size())
+		{
+			Component* comp = m_componentsVec[m_componentsVec.size() - 1];
+			
+			std::vector<Component*>& comps = m_componentsMap[comp->id()];
+			
+			// Should be in the same order as vector list
+			assert(comp == comps[comps.size() - 1]);
+			
+			m_componentsMap[comp->id()].pop_back();
+			
+			m_componentsVec.pop_back();
+			
+			if(comp->entityShouldDelete())
+				delete comp;
+		}
+		
+//		for (auto c: m_componentsVec)
+//			if(c->entityShouldDelete())
+//				delete c;
 	}
 	
 	bool Entity::addComponent(Component* comp, bool hasOwnership, bool deleteIfFull)
@@ -29,6 +47,8 @@ namespace Cosmos
 		
 		comp->entityShouldDelete(hasOwnership);
 		
+		printf("%i\n", m_componentsMap.size());
+		
 		m_componentsMap[comp->id()].push_back(comp);
 		
 		m_componentsVec.push_back(comp);
@@ -40,27 +60,42 @@ namespace Cosmos
 	{
 		assert(hasComponent(compID));
 		
-		int nErased = m_componentsMap.erase(compID);
-		for(int i = 0; nErased; i++)
+		int nToErase = m_componentsMap.at(compID).size();
+		m_componentsMap.erase(compID);
+
+		#ifndef NDEBUG
+		
+		// check if the amount to erase actually matches up
+		int count = 0;
+		for(auto & c : m_componentsVec)
 		{
+			assert(c != nullptr);
+			
+			count += (c->id() == compID);
+		}
+		assert(count == nToErase);
+		
+		#endif
+		
+		for(int i = 0; nToErase; i++)
+		{
+			assert(i < m_componentsVec.size());
+			
 			if(m_componentsVec[i]->id() == compID)
 			{
 				Component* comp = m_componentsVec[i];
 				
 				m_componentsVec.erase(m_componentsVec.begin() + i);
+				i--;
 				
 				if(comp->entityShouldDelete())
 					delete comp;
 				
-				nErased--;
-				
-				if(!nErased)
-					return;
+				nToErase--;
 			}
 		}
 		
-		// Should never reach this point
-		assert(false);
+		assert(nToErase == 0);
 	}
 	
 	bool Entity::hasComponent(int compID) const

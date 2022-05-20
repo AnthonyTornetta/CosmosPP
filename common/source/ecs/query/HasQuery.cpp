@@ -11,4 +11,9 @@ namespace Cosmos
 	{
 		return entity.hasComponent(m_componentID);
 	}
+	
+	HasQuery *HasQuery::clone() const
+	{
+		return new HasQuery(m_componentID, next()->clone());
+	}
 }

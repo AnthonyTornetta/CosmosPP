@@ -16,6 +16,7 @@ namespace Cosmos
 	public:
 		explicit HasQuery(int componentID, Query* next = nullptr): m_componentID(componentID), Query(next) {}
 		
+		HasQuery* clone() const override;
 		bool evaluate(const Entity& entity) const override;
 	};
 }
