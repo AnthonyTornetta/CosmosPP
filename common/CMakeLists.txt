@@ -4,7 +4,6 @@ project(CosmosCommon VERSION 1.0.0 DESCRIPTION "cosmos common")
 
 set(CMAKE_CXX_STANDARD 20)
 
-
 add_library(CosmosCommon STATIC qu3e/scene/q3Scene.cpp qu3e/scene/q3Scene.h qu3e/math/q3Mat3.cpp qu3e/math/q3Mat3.h qu3e/math/q3Mat3.inl qu3e/math/q3Math.h qu3e/math/q3Math.inl qu3e/math/q3Quaternion.cpp qu3e/math/q3Quaternion.h qu3e/math/q3Transform.h qu3e/math/q3Transform.inl qu3e/math/q3Vec3.cpp qu3e/math/q3Vec3.h qu3e/math/q3Vec3.inl qu3e/common/q3Geometry.cpp qu3e/common/q3Geometry.h qu3e/common/q3Geometry.inl
         qu3e/common/q3Memory.cpp qu3e/common/q3Memory.h
         qu3e/common/q3Settings.h qu3e/common/q3Types.h

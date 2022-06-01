@@ -5,19 +5,23 @@
 #include "Entity.h"
 
 #include <cassert>
-#include <cstdio>
 
 namespace Cosmos
 {
 	Entity::~Entity()
 	{
-		while(m_componentsVec.size())
+		while(!m_componentsVec.empty())
 		{
 			Component* comp = m_componentsVec[m_componentsVec.size() - 1];
+			
+			assert(comp != nullptr);
 			
 			std::vector<Component*>& comps = m_componentsMap[comp->id()];
 			
 			// Should be in the same order as vector list
+			// If this ever becomes untrue, you will have to search through the m_componentsMap[comp->id()] for this component then remove it.
+			// Do this because some components may search that map for components to delete and can crash if there is a deleted object in that map still
+			// (this is why it is also removed from the componentsVec)
 			assert(comp == comps[comps.size() - 1]);
 			
 			m_componentsMap[comp->id()].pop_back();
@@ -27,10 +31,6 @@ namespace Cosmos
 			if(comp->entityShouldDelete())
 				delete comp;
 		}
-		
-//		for (auto c: m_componentsVec)
-//			if(c->entityShouldDelete())
-//				delete c;
 	}
 	
 	bool Entity::addComponent(Component* comp, bool hasOwnership, bool deleteIfFull)
@@ -47,8 +47,6 @@ namespace Cosmos
 		
 		comp->entityShouldDelete(hasOwnership);
 		
-		printf("%i\n", m_componentsMap.size());
-		
 		m_componentsMap[comp->id()].push_back(comp);
 		
 		m_componentsVec.push_back(comp);
@@ -60,7 +58,7 @@ namespace Cosmos
 	{
 		assert(hasComponent(compID));
 		
-		int nToErase = m_componentsMap.at(compID).size();
+		int nToErase = (int) m_componentsMap.at(compID).size();
 		m_componentsMap.erase(compID);
 
 		#ifndef NDEBUG
@@ -84,6 +82,8 @@ namespace Cosmos
 			if(m_componentsVec[i]->id() == compID)
 			{
 				Component* comp = m_componentsVec[i];
+				
+				assert(comp != nullptr);
 				
 				m_componentsVec.erase(m_componentsVec.begin() + i);
 				i--;

@@ -23,6 +23,7 @@
 #include "source/structure/Dirty.h"
 #include "source/ecs/Ecs.h"
 
+#include "source/rendering/RenderedStructure.h"
 
 inline Ogre::Vector3 to(const q3::q3Vec3& v)
 {
@@ -228,12 +229,16 @@ void MyTestApp::setup(void)
 //																	   cube.addFront(*man, 0))))));
 //
 //	man->end();
-	rs->updateNoGL();
+
+	std::thread([rs]()
+	{
+		rs->updateNoGL();
+	}).join();
+	
 	rs->updateGL();
 
 //	node = rs.m_scnMgr.getRootSceneNode()->createChildSceneNode(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
 	node = rs->addToScene();
-
 	
 	Ogre::ManualObject *man2 = scnMgr->createManualObject("test_obj_2");
 	
@@ -249,7 +254,6 @@ void MyTestApp::setup(void)
 	
 	scnMgr->getRootSceneNode()->createChildSceneNode(to(planeBody->GetTransform().position),
 													 toQuat(planeBody->GetTransform().rotation))->attachObject(man2);
-	
 //    node->attachObject(ent);
 }
 
@@ -283,20 +287,20 @@ int main()
 
 #else
 
-int main()
+int main232323()
 {
 	using namespace Cosmos;
 	
 	ECSWorld world;
 	
 	Entity* structEnt = world.createEntity();
-	//Entity* e2 = world.createEntity();
+	Entity* e2 = world.createEntity();
 	
-	//e2->addComponent(new Chunk());
+	e2->addComponent(new Chunk());
 	
 	structEnt->addComponent(new Chunk());
 	
-	//structEnt->addComponent(new Structure(10, 10, 10, structEnt));
+	structEnt->addComponent(new Structure(10, 10, 10, structEnt));
 	
 	world.addSystem(new ConstSystem(new HasQuery(Chunk::STATIC_ID()), [](const ECSWorld& world, ConstQueryIterator itr)
 	{
@@ -331,7 +335,7 @@ int main()
 
 
 //! [main]
-int main21(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	MyTestApp app;
 	app.initApp();
@@ -339,6 +343,8 @@ int main21(int argc, char *argv[])
 	float ry = 0;
 	
 	auto last = std::chrono::system_clock::now();
+	
+	
 	
 	while (!app.getRoot()->endRenderingQueued())
 	{

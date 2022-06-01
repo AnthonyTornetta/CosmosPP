@@ -10,29 +10,19 @@ namespace Ogre
 	class SceneNode;
 }
 
-namespace Cosmos
+namespace Cosmos::Rendering
 {
-	namespace Rendering
+	class Renderable
 	{
-		class Renderable
-		{
-		public:
-			Renderable() = default;
-			
-			~Renderable() = default;
-			
-			virtual Ogre::SceneNode* addToScene() = 0;
-			
-			virtual void updateNoGL() = 0;
-			
-			virtual void updateGL() = 0;
-			
-			virtual bool needsUpdated() = 0;
-			
-			/**
-			 * Renders this object to the screen
-			 */
-			virtual void draw() = 0;
-		};
-	}
+	public:
+		Renderable() = default;
+		
+		~Renderable() = default;
+		
+		virtual Ogre::SceneNode* addToScene() = 0;
+		
+		virtual void updateNoGL() = 0;
+		
+		virtual void updateGL() = 0;
+	};
 }

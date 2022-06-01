@@ -13,8 +13,6 @@ namespace Cosmos
 	ECSWorld::ECSWorld() = default;
 	ECSWorld::~ECSWorld()
 	{
-		printf("DTOR CALLED\n");
-		
 		for(const ConstSystem* sys: m_systems)
 		{
 			assert(sys != nullptr);
