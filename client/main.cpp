@@ -23,7 +23,12 @@
 #include "source/structure/Dirty.h"
 #include "source/ecs/Ecs.h"
 
+#include <thread>
+
 #include "source/rendering/RenderedStructure.h"
+#include "source/rendering/DirtyNeedsRendered.h"
+#include "source/rendering/DoingRendering.h"
+#include "source/rendering/NeedsOpenGLUpdated.h"
 
 inline Ogre::Vector3 to(const q3::q3Vec3& v)
 {
@@ -51,6 +56,10 @@ private:
 	static constexpr size_t MAX_KEY = 256;
 
 public:
+	inline static MyTestApp* instance = nullptr;
+	
+	Cosmos::ECSWorld world;
+	
 	Ogre::SceneNode *node;
 	
 	bool keys[MAX_KEY] = {false};
@@ -93,8 +102,10 @@ void MyTestApp::updateInput()
 
 //! [constructor]
 MyTestApp::MyTestApp() : OgreBites::ApplicationContext("OgreTutorialApp"),
-						 scene(q3::q3Scene(1/60.0f, {0, -10, 0}, 20))
+						 scene(q3::q3Scene(1/60.0f, {0, -10, 0}, 20)),
+						 node(nullptr), world(Cosmos::ECSWorld())
 {
+	instance = this;
 }
 //! [constructor]
 
@@ -199,14 +210,101 @@ void MyTestApp::setup(void)
 		planeBody->AddBox(planeBox);
 	}
 	
+	using namespace Cosmos;
+	using namespace Cosmos::Rendering;
+	
+	Entity* ent = world.createEntity();
+	
+	auto* structure = new Structure(2, 2, 2, ent);
+	
+	ent->addComponent(structure);
+	ent->addComponent(new RenderedStructure(*scnMgr, *structure));
+	
+	for(int z = 0; z < structure->blocksLength(); z++)
+	{
+		for(int y = 0; y < structure->blocksHeight(); y++)
+		{
+			for(int x = 0; x < structure->blocksWidth(); x++)
+			{
+				ent->addComponent(new DirtyNeedsRendered(x, y, z));
+			}
+		}
+	}
+	
+	world.addMutSystem(new MutSystem(
+			new HasQuery(DirtyNeedsRendered::STATIC_ID(), new HasQuery(RenderedStructure::STATIC_ID())),
+			[](ECSWorld& world, MutQueryIterator itr)
+			{
+				for(Entity* structureEntity : itr)
+				{
+					auto* rs = (RenderedStructure*) structureEntity->getFirstComponentMut(RenderedStructure::STATIC_ID());
+					
+					for(Component* comp : structureEntity->getComponents(DirtyNeedsRendered::STATIC_ID()))
+					{
+						auto* needsRendered = (DirtyNeedsRendered*)comp;
+						
+						rs->addPlaceToUpdateNext(needsRendered->chunkX(), needsRendered->chunkY(), needsRendered->chunkZ());
+					}
+					
+					structureEntity->removeAllComponentsWithID(DirtyNeedsRendered::STATIC_ID());
+					
+					structureEntity->addComponent(new DoingRendering(new std::thread([rs, structureEntity]()
+					{
+						rs->updateNoGL();
+						
+						structureEntity->removeAllComponentsWithID(DoingRendering::STATIC_ID());
+						
+						structureEntity->addComponent(new NeedsOpenGLUpdated());
+					})));
+				}
+			}));
+	
+	world.addMutSystem(new MutSystem(
+			new HasQuery(NeedsOpenGLUpdated::STATIC_ID()),
+			[](ECSWorld& world, MutQueryIterator itr)
+			{
+				for(Entity* entity : itr)
+				{
+					auto* rs = (RenderedStructure*) entity->getFirstComponentMut(RenderedStructure::STATIC_ID());
+					
+					rs->updateGL();
+					
+					if (!rs->isAddedToScene())
+					{
+						MyTestApp::instance->node = rs->addToScene();
+					}
+					
+					entity->removeAllComponentsWithID(NeedsOpenGLUpdated::STATIC_ID());
+				}
+			}, true));
+	
+	world.addMutSystem(new MutSystem(
+			new HasQuery(Dirty::STATIC_ID(), new HasQuery(RenderedStructure::STATIC_ID(), new HasQuery(Structure::STATIC_ID()))),
+			[](ECSWorld& world, MutQueryIterator itr)
+			{
+				for(Entity* structureEntity : itr)
+				{
+					auto* rs = (RenderedStructure*) structureEntity->getFirstComponentMut(RenderedStructure::STATIC_ID());
+					
+					std::thread([rs]()
+					{
+						rs->updateNoGL();
+					});
+				}
+			}));
+	
+	world.addMutSystem(new MutSystem(
+			new HasQuery(Dirty::STATIC_ID()),
+			[](ECSWorld& world, MutQueryIterator itr)
+			{
+				for(Entity* ent : itr)
+				{
+					ent->removeAllComponentsWithID(Dirty::STATIC_ID());
+				}
+			}));
 	
 	
 	// finally something to render
-	
-	CosmosRendering::Cube cube;
-	
-	// yes this leaks memory
-	Cosmos::Rendering::RenderedStructure* rs = new Cosmos::Rendering::RenderedStructure(*scnMgr);
 	
 //	rs.updateNoGL();
 //	rs.updateGL();
@@ -229,20 +327,12 @@ void MyTestApp::setup(void)
 //																	   cube.addFront(*man, 0))))));
 //
 //	man->end();
-
-	std::thread([rs]()
-	{
-		rs->updateNoGL();
-	}).join();
-	
-	rs->updateGL();
-
-//	node = rs.m_scnMgr.getRootSceneNode()->createChildSceneNode(Ogre::Vector3::ZERO, Ogre::Quaternion::IDENTITY);
-	node = rs->addToScene();
 	
 	Ogre::ManualObject *man2 = scnMgr->createManualObject("test_obj_2");
 	
 	man2->begin("Examples/OgreLogo", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+	
+	Cube cube;
 	
 	cube.addBottom(*man2,
 				   cube.addTop(*man2,
@@ -345,7 +435,6 @@ int main(int argc, char *argv[])
 	auto last = std::chrono::system_clock::now();
 	
 	
-	
 	while (!app.getRoot()->endRenderingQueued())
 	{
 		auto now = std::chrono::system_clock::now();
@@ -359,6 +448,8 @@ int main(int argc, char *argv[])
 		
 		app.pollEvents();
 		app.getRoot()->renderOneFrame();
+		
+		app.world.runSystems();
 		
 		app.scene.Step();
 		

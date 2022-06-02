@@ -15,9 +15,9 @@ namespace Cosmos
 		Component(): m_entityShouldDelete(false) {}
 		virtual ~Component() = default;
 		
-		virtual int id() = 0;
+		[[nodiscard]] virtual int id() const = 0;
 		
-		virtual bool canHaveDuplicates()
+		[[nodiscard]] virtual bool canHaveDuplicates() const
 		{
 			return false;
 		}
@@ -27,7 +27,7 @@ namespace Cosmos
 		 * If this is true, the Component will be deleted when the entity is deleted
 		 * @return If this is true, the Component will be deleted when the entity is deleted
 		 */
-		[[nodiscard]] bool entityShouldDelete()
+		[[nodiscard]] bool entityShouldDelete() const
 		{
 			return m_entityShouldDelete;
 		}

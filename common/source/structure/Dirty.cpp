@@ -6,7 +6,7 @@
 
 namespace Cosmos
 {
-	int Dirty::id()
+	int Dirty::id() const
 	{
 		return STATIC_ID();
 	}

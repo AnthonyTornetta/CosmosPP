@@ -5,23 +5,29 @@
 
 #include <OgreManualObject.h>
 
-namespace CosmosRendering
+namespace Cosmos::Rendering
 {
-	int Cube::addLeft(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ)
+	Cube::Cube(Tuple3<float> offset)
+		: m_offset(offset)
 	{
-		man.position(-0.5 * scaleX, 0.5 * scaleY, -0.5 * scaleZ);
+	
+	}
+	
+	int Cube::addLeft(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ) const
+	{
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + -0.5f * scaleZ);
 		man.normal(-1, 0, 0);
 		man.textureCoord(0, 0);
 		
-		man.position(-0.5 * scaleX, -0.5 * scaleY, -0.5 * scaleZ);
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + -0.5f * scaleZ);
 		man.normal(-1, 0, 0);
 		man.textureCoord(0, 1);
 		
-		man.position(-0.5 * scaleX, -0.5 * scaleY, 0.5 * scaleZ);
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + 0.5f * scaleZ);
 		man.normal(-1, 0, 0);
 		man.textureCoord(1, 1);
 		
-		man.position(-0.5 * scaleX, 0.5 * scaleY, 0.5 * scaleZ);
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + 0.5f * scaleZ);
 		man.normal(-1, 0, 0);
 		man.textureCoord(1, 0);
 		
@@ -30,21 +36,21 @@ namespace CosmosRendering
 		return index + 4;
 	}
 	
-	int Cube::addRight(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ)
+	int Cube::addRight(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ) const
 	{
-		man.position(0.5 * scaleX, 0.5 * scaleY, 0.5 * scaleZ);
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + 0.5f * scaleZ);
 		man.normal(1, 0, 0);
 		man.textureCoord(0, 0);
 		
-		man.position(0.5 * scaleX, -0.5 * scaleY, 0.5 * scaleZ);
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + 0.5f * scaleZ);
 		man.normal(1, 0, 0);
 		man.textureCoord(0, 1);
 		
-		man.position(0.5 * scaleX, -0.5 * scaleY, -0.5 * scaleZ);
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + -0.5f * scaleZ);
 		man.normal(1, 0, 0);
 		man.textureCoord(1, 1);
 		
-		man.position(0.5 * scaleX, 0.5 * scaleY, -0.5 * scaleZ);
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + -0.5f * scaleZ);
 		man.normal(1, 0, 0);
 		man.textureCoord(1, 0);
 		
@@ -53,21 +59,21 @@ namespace CosmosRendering
 		return index + 4;
 	}
 	
-	int Cube::addTop(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ)
+	int Cube::addTop(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ) const
 	{
-		man.position(0.5 * scaleX, 0.5 * scaleY, 0.5 * scaleZ);   // R F 1 0
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + 0.5f * scaleZ);   // R F 1 0
 		man.normal(0, 1, 0);
 		man.textureCoord(1, 0);
 		
-		man.position(0.5 * scaleX, 0.5 * scaleY, -0.5 * scaleZ);  // R B 1 1
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + -0.5f * scaleZ);  // R B 1 1
 		man.normal(0, 1, 0);
 		man.textureCoord(1, 1);
 		
-		man.position(-0.5 * scaleX, 0.5 * scaleY, -0.5 * scaleZ); // L B 0 1
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + -0.5f * scaleZ); // L B 0 1
 		man.normal(0, 1, 0);
 		man.textureCoord(0, 1);
 		
-		man.position(-0.5 * scaleX, 0.5 * scaleY, 0.5 * scaleZ); // L F 0 0
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + 0.5f * scaleZ); // L F 0 0
 		man.normal(0, 1, 0);
 		man.textureCoord(0, 0);
 		
@@ -76,21 +82,21 @@ namespace CosmosRendering
 		return index + 4;
 	}
 	
-	int Cube::addBottom(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ)
+	int Cube::addBottom(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ) const
 	{
-		man.position(0.5 * scaleX, -0.5 * scaleY, -0.5 * scaleZ);   // R F 1 0
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + -0.5f * scaleZ);   // R F 1 0
 		man.normal(0, -1, 0);
 		man.textureCoord(1, 0);
 		
-		man.position(0.5 * scaleX, -0.5 * scaleY, 0.5 * scaleZ);  // R B 1 1
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + 0.5f * scaleZ);  // R B 1 1
 		man.normal(0, -1, 0);
 		man.textureCoord(1, 1);
 		
-		man.position(-0.5 * scaleX, -0.5 * scaleY, 0.5 * scaleZ); // L B 0 1
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + 0.5f * scaleZ); // L B 0 1
 		man.normal(0, -1, 0);
 		man.textureCoord(0, 1);
 		
-		man.position(-0.5 * scaleX, -0.5 * scaleY, -0.5 * scaleZ); // L F 0 0
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + -0.5f * scaleZ); // L F 0 0
 		man.normal(0, -1, 0);
 		man.textureCoord(0, 0);
 		
@@ -99,21 +105,21 @@ namespace CosmosRendering
 		return index + 4;
 	}
 	
-	int Cube::addFront(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ)
+	int Cube::addFront(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ) const
 	{
-		man.position(-0.5 * scaleX, 0.5 * scaleY, 0.5 * scaleZ);
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + 0.5f * scaleZ);
 		man.normal(0, 0, 1);
 		man.textureCoord(0, 0);
 		
-		man.position(-0.5 * scaleX, -0.5 * scaleY, 0.5 * scaleZ);
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + 0.5f * scaleZ);
 		man.normal(0, 0, 1);
 		man.textureCoord(0, 1);
 		
-		man.position(0.5 * scaleX, -0.5 * scaleY, 0.5 * scaleZ);
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + 0.5f * scaleZ);
 		man.normal(0, 0, 1);
 		man.textureCoord(1, 1);
 		
-		man.position(0.5 * scaleX, 0.5 * scaleY, 0.5 * scaleZ);
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + 0.5f * scaleZ);
 		man.normal(0, 0, 1);
 		man.textureCoord(1, 0);
 		
@@ -122,21 +128,21 @@ namespace CosmosRendering
 		return index + 4;
 	}
 	
-	int Cube::addBack(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ)
+	int Cube::addBack(Ogre::ManualObject &man, int index, float scaleX, float scaleY, float scaleZ) const
 	{
-		man.position(0.5 * scaleX, 0.5 * scaleY, -0.5 * scaleZ);
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + -0.5f * scaleZ);
 		man.normal(0, 0, -1);
 		man.textureCoord(0, 0);
 		
-		man.position(0.5 * scaleX, -0.5 * scaleY, -0.5 * scaleZ);
+		man.position(m_offset.x + 0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + -0.5f * scaleZ);
 		man.normal(0, 0, -1);
 		man.textureCoord(0, 1);
 		
-		man.position(-0.5 * scaleX, -0.5 * scaleY, -0.5 * scaleZ);
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + -0.5f * scaleY, m_offset.z + -0.5f * scaleZ);
 		man.normal(0, 0, -1);
 		man.textureCoord(1, 1);
 		
-		man.position(-0.5 * scaleX, 0.5 * scaleY, -0.5 * scaleZ);
+		man.position(m_offset.x + -0.5f * scaleX, m_offset.y + 0.5f * scaleY, m_offset.z + -0.5f * scaleZ);
 		man.normal(0, 0, -1);
 		man.textureCoord(1, 0);
 		

@@ -19,10 +19,12 @@ namespace Cosmos
 	private:
 		const Query *m_query;
 		const SystemCallback m_callback;
+		
+		const bool m_runsOnMainThread;
 	
 	public:
-		System(const Query *query, SystemCallback callback)
-			: m_callback(callback), m_query(query)
+		System(const Query *query, SystemCallback callback, bool runsOnMainThread = false)
+			: m_callback(callback), m_query(query), m_runsOnMainThread(runsOnMainThread)
 		{
 		
 		}
@@ -37,9 +39,14 @@ namespace Cosmos
 			m_callback(world, itr);
 		}
 		
-		const Query* query() const
+		[[nodiscard]] const Query* query() const
 		{
 			return m_query;
+		}
+		
+		[[nodiscard]] bool runsOnMainThread() const
+		{
+			return m_runsOnMainThread;
 		}
 	};
 	

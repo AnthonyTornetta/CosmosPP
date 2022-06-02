@@ -91,23 +91,31 @@ namespace Cosmos
 	
 	void ECSWorld::runSystems()
 	{
-		auto* threads = new std::thread[m_systems.size()];
+		std::vector<std::thread*> threads;
 		
 		for (int i = 0; i < m_systems.size(); i++)//const System* sys : m_systems)
 		{
 			auto *sys = m_systems[i];
 			assert(sys != nullptr);
 			
-			threads[i] = std::thread([this, sys]()
+			if(!sys->runsOnMainThread())
+			{
+				threads.push_back(new std::thread([this, sys]()
+				{
+					sys->execute(*this, ConstQueryIterator(this, sys->query()));
+				}));
+			}
+			else
 			{
 				sys->execute(*this, ConstQueryIterator(this, sys->query()));
-			});
+			}
 		}
 		
-		for(int i = 0; i < m_systems.size(); i++)
-			threads[i].join();
-		
-		delete[] threads;
+		for(auto *thread : threads)
+		{
+			thread->join();
+			delete thread;
+		}
 		
 		for (const MutSystem* sys : m_mutSystems)
 		{

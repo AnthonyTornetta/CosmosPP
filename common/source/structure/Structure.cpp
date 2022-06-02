@@ -54,7 +54,7 @@ namespace Cosmos
 		return x >= 0 && x < blocksWidth() && y >= 0 && y < blocksHeight() && z >= 0 && z < blocksLength();
 	}
 	
-	int Structure::id()
+	int Structure::id() const
 	{
 		return STATIC_ID();
 	}

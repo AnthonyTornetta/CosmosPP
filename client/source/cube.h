@@ -4,23 +4,30 @@
 
 #pragma once
 
+#include "source/utils/Tuple3.h"
+
 namespace Ogre
 {
 	class ManualObject;
 }
 
-namespace CosmosRendering
+namespace Cosmos::Rendering
 {
 	class Cube
 	{
+	private:
+		Tuple3<float> m_offset;
+		
 	public:
-		int addLeft(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1);
-		int addRight(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1);
+		explicit Cube(Tuple3<float> offset = {0, 0, 0});
 		
-		int addTop(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1);
-		int addBottom(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1);
+		int addLeft(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1) const;
+		int addRight(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1) const;
 		
-		int addFront(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1);
-		int addBack(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1);
+		int addTop(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1) const;
+		int addBottom(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1) const;
+		
+		int addFront(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1) const;
+		int addBack(Ogre::ManualObject &man, int index, float scaleX = 1, float scaleY = 1, float scaleZ = 1) const;
 	};
 }

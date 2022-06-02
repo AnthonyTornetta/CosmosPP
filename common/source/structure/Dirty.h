@@ -11,7 +11,7 @@ namespace Cosmos
 	public:
 		~Dirty() override;
 		
-		int id() override;
+		[[nodiscard]] int id() const override;
 		
 		static int STATIC_ID();
 	};

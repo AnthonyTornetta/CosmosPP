@@ -43,7 +43,7 @@ namespace Cosmos
 		return x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT && z >= 0 && z < LENGTH;
 	}
 	
-	int Chunk::id()
+	int Chunk::id() const
 	{
 		return STATIC_ID();
 	}
@@ -55,7 +55,7 @@ namespace Cosmos
 		return id;
 	}
 	
-	bool Chunk::canHaveDuplicates()
+	bool Chunk::canHaveDuplicates() const
 	{
 		return true;
 	}

@@ -27,7 +27,7 @@ namespace Cosmos
 		Chunk();
 		~Chunk() override;
 		
-		[[nodiscard]] int id() override;
+		[[nodiscard]] int id() const override;
 		
 		[[nodiscard]] static int STATIC_ID();
 		
@@ -58,6 +58,6 @@ namespace Cosmos
 		 */
 		[[nodiscard]] bool withinChunkCoords(int x, int y, int z) const;
 		
-		bool canHaveDuplicates() override;
+		bool canHaveDuplicates() const override;
 	};
 }

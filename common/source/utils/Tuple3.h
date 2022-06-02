@@ -16,6 +16,16 @@ namespace Cosmos
 		
 		}
 		
+		bool operator==(const Tuple3<T> &t) const
+		{
+			return x == t.x && y == t.y && z == t.z;
+		}
+		
+		bool operator!=(const Tuple3<T> &t) const
+		{
+			return x != t.x || y != t.y || z != t.z;
+		}
+		
 		const T x, y, z;
 	};
 }

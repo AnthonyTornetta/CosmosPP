@@ -36,7 +36,7 @@ namespace Cosmos
 		
 		bool withinBlocks(int x, int y, int z) const;
 		
-		[[nodiscard]] int id() override;
+		[[nodiscard]] int id() const override;
 		
 		static int STATIC_ID();
 		
