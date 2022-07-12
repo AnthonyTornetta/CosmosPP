@@ -23,12 +23,16 @@
 #include "source/structure/Dirty.h"
 #include "source/ecs/Ecs.h"
 
+#include <memory>
 #include <thread>
+#include <source/block/Blocks.h>
 
 #include "source/rendering/RenderedStructure.h"
 #include "source/rendering/DirtyNeedsRendered.h"
 #include "source/rendering/DoingRendering.h"
 #include "source/rendering/NeedsOpenGLUpdated.h"
+
+#include "source/world/ClientWorld.h"
 
 inline Ogre::Vector3 to(const q3::q3Vec3& v)
 {
@@ -61,6 +65,8 @@ public:
 	Cosmos::ECSWorld world;
 	
 	Ogre::SceneNode *node;
+	
+	Cosmos::ClientWorld* clientWorld;
 	
 	bool keys[MAX_KEY] = {false};
 	bool keyBuffer[MAX_KEY] = {false};
@@ -138,7 +144,7 @@ bool MyTestApp::keyReleased(const OgreBites::KeyboardEvent &evt)
 
 
 //! [setup]
-void MyTestApp::setup(void)
+void MyTestApp::setup()
 {
 	// do not forget to call the base first
 	OgreBites::ApplicationContext::setup();
@@ -213,96 +219,21 @@ void MyTestApp::setup(void)
 	using namespace Cosmos;
 	using namespace Cosmos::Rendering;
 	
-	Entity* ent = world.createEntity();
+	Blocks::registerDefaultBlocks();
 	
-	auto* structure = new Structure(2, 2, 2, ent);
+	clientWorld = new ClientWorld(scnMgr);
 	
-	ent->addComponent(structure);
-	ent->addComponent(new RenderedStructure(*scnMgr, *structure));
+	auto *structure = new Structure(1, 1, 1);
 	
-	for(int z = 0; z < structure->blocksLength(); z++)
-	{
-		for(int y = 0; y < structure->blocksHeight(); y++)
-		{
-			for(int x = 0; x < structure->blocksWidth(); x++)
-			{
-				ent->addComponent(new DirtyNeedsRendered(x, y, z));
-			}
-		}
-	}
+	clientWorld->addStructure(structure);
 	
-	world.addMutSystem(new MutSystem(
-			new HasQuery(DirtyNeedsRendered::STATIC_ID(), new HasQuery(RenderedStructure::STATIC_ID())),
-			[](ECSWorld& world, MutQueryIterator itr)
-			{
-				for(Entity* structureEntity : itr)
-				{
-					auto* rs = (RenderedStructure*) structureEntity->getFirstComponentMut(RenderedStructure::STATIC_ID());
-					
-					for(Component* comp : structureEntity->getComponents(DirtyNeedsRendered::STATIC_ID()))
-					{
-						auto* needsRendered = (DirtyNeedsRendered*)comp;
-						
-						rs->addPlaceToUpdateNext(needsRendered->chunkX(), needsRendered->chunkY(), needsRendered->chunkZ());
-					}
-					
-					structureEntity->removeAllComponentsWithID(DirtyNeedsRendered::STATIC_ID());
-					
-					structureEntity->addComponent(new DoingRendering(new std::thread([rs, structureEntity]()
-					{
-						rs->updateNoGL();
-						
-						structureEntity->removeAllComponentsWithID(DoingRendering::STATIC_ID());
-						
-						structureEntity->addComponent(new NeedsOpenGLUpdated());
-					})));
-				}
-			}));
+	structure->block(0, 0 ,0, Blocks::GRASS);
 	
-	world.addMutSystem(new MutSystem(
-			new HasQuery(NeedsOpenGLUpdated::STATIC_ID()),
-			[](ECSWorld& world, MutQueryIterator itr)
-			{
-				for(Entity* entity : itr)
-				{
-					auto* rs = (RenderedStructure*) entity->getFirstComponentMut(RenderedStructure::STATIC_ID());
-					
-					rs->updateGL();
-					
-					if (!rs->isAddedToScene())
-					{
-						MyTestApp::instance->node = rs->addToScene();
-					}
-					
-					entity->removeAllComponentsWithID(NeedsOpenGLUpdated::STATIC_ID());
-				}
-			}, true));
 	
-	world.addMutSystem(new MutSystem(
-			new HasQuery(Dirty::STATIC_ID(), new HasQuery(RenderedStructure::STATIC_ID(), new HasQuery(Structure::STATIC_ID()))),
-			[](ECSWorld& world, MutQueryIterator itr)
-			{
-				for(Entity* structureEntity : itr)
-				{
-					auto* rs = (RenderedStructure*) structureEntity->getFirstComponentMut(RenderedStructure::STATIC_ID());
-					
-					std::thread([rs]()
-					{
-						rs->updateNoGL();
-					});
-				}
-			}));
-	
-	world.addMutSystem(new MutSystem(
-			new HasQuery(Dirty::STATIC_ID()),
-			[](ECSWorld& world, MutQueryIterator itr)
-			{
-				for(Entity* ent : itr)
-				{
-					ent->removeAllComponentsWithID(Dirty::STATIC_ID());
-				}
-			}));
-	
+//	cosmosWorld.m_threads.push_back(std::make_unique<std::thread>([rs, structure]()
+//	{
+//
+//	}));
 	
 	// finally something to render
 	
@@ -390,7 +321,7 @@ int main232323()
 	
 	structEnt->addComponent(new Chunk());
 	
-	structEnt->addComponent(new Structure(10, 10, 10, structEnt));
+	structEnt->addComponent(new Structure(10, 10, 10));
 	
 	world.addSystem(new ConstSystem(new HasQuery(Chunk::STATIC_ID()), [](const ECSWorld& world, ConstQueryIterator itr)
 	{
@@ -450,6 +381,10 @@ int main(int argc, char *argv[])
 		app.getRoot()->renderOneFrame();
 		
 		app.world.runSystems();
+		
+		app.clientWorld->update();
+		
+		app.clientWorld->updateRenderData();
 		
 		app.scene.Step();
 		

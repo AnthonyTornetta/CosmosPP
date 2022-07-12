@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
-add_executable(${PROJECT_NAME} main.cpp source/cube.cpp source/cube.h source/rendering/RenderedStructure.cpp source/rendering/RenderedStructure.h source/rendering/Renderable.h tests/TestECS.cpp tests/TestECS.h source/rendering/DirtyNeedsRendered.h source/rendering/DirtyNeedsRendered.cpp source/rendering/DoingRendering.h source/rendering/DoingRendering.cpp source/rendering/NeedsOpenGLUpdated.h source/rendering/NeedsOpenGLUpdated.cpp)
+add_executable(${PROJECT_NAME} main.cpp source/cube.cpp source/cube.h source/rendering/RenderedStructure.cpp source/rendering/RenderedStructure.h source/rendering/Renderable.h tests/TestECS.cpp tests/TestECS.h source/rendering/DirtyNeedsRendered.h source/rendering/DirtyNeedsRendered.cpp source/rendering/DoingRendering.h source/rendering/DoingRendering.cpp source/rendering/NeedsOpenGLUpdated.h source/rendering/NeedsOpenGLUpdated.cpp source/world/ClientWorld.h source/world/ClientWorld.cpp source/rendering/StructureRenderData.h source/rendering/StructureRenderData.cpp source/rendering/ChunkRenderData.h source/rendering/ChunkRenderData.cpp)
 
 # This clever hackery from https://stackoverflow.com/questions/7980784/cmake-add-sub-directory-which-is-not-sub-directory-on-real-directory
 # I'm bad at cmake so this is how I could get this to work. There's probably a better way

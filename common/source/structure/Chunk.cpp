@@ -8,6 +8,7 @@
 #include "../utils/ArrayUtils.h"
 
 #include <cassert>
+#include <cstring>
 
 #include "../ecs/component/ComponentIDs.h"
 
@@ -16,7 +17,8 @@ namespace Cosmos
 	Chunk::Chunk()
 			: m_blocks(new unsigned short[WIDTH * HEIGHT * LENGTH])
 	{
-	
+		// this will break if air's ID isn't <= 255 I think
+		memset(m_blocks, Blocks::AIR.id(), WIDTH * HEIGHT * LENGTH * sizeof(unsigned short));
 	}
 	
 	Chunk::~Chunk()
