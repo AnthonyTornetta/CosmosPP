@@ -12,30 +12,156 @@
 #include <enet/enet.h>
 #include <atomic>
 #include <sstream>
+#include <vector>
 
 #include "source/netty/Constants.h"
 
-void SendPacket(ENetPeer* peer, const char* data)
+struct Tuple2
 {
-	ENetPacket* packet = enet_packet_create(data, strlen(data)+1, ENET_PACKET_FLAG_RELIABLE);
-	// Second arg is channel:
+	int x, y;
+};
+
+class ReferenceString
+{
+	// [start, end)
+	const int start, end;
+	const std::string& stringRef;
+
+public:
+	ReferenceString(size_t start, size_t end, const std::string& str)
+		: start(start), end(end), stringRef(str)
+	{
+	
+	}
+	
+	char operator[](int i) const
+	{
+		assert(i + start < end);
+		return stringRef[i + start];
+	}
+	
+	size_t size() const
+	{
+		return end - start;
+	}
+	
+	bool operator==(const std::string& str) const
+	{
+		if(size() != str.size())
+			return false;
+		for(int i = 0; i < size(); i++)
+			if(str[i] != (*this)[i])
+				return false;
+		return true;
+	}
+	
+	bool operator==(const ReferenceString& str) const
+	{
+		if(size() != str.size())
+			return false;
+		for(int i = 0; i < size(); i++)
+			if(str[i] != (*this)[i])
+				return false;
+		return true;
+	}
+};
+
+std::vector<ReferenceString> split(const std::string& str, const char on)
+{
+	std::vector<ReferenceString> vec;
+	
+	Tuple2 working {-1, -1};
+	
+	for(int i = 0; i < str.size(); i++)
+	{
+		if(str[i] == on)
+		{
+			if(working.x != -1)
+			{
+				working.y = i;
+				vec.emplace_back(working.x, working.y, str);
+				working.x = -1;
+				working.y = -1;
+			}
+		}
+		else if(working.x == -1)
+		{
+			working.x = i;
+		}
+	}
+	
+	if(working.x != -1)
+	{
+		working.y = (int)str.size();
+		vec.emplace_back(working.x, working.y, str);
+	}
+	
+	return vec;
+}
+
+void sendPacket(ENetPeer* peer, const void* data, size_t data_size)
+{
+	ENetPacket * packet = enet_packet_create(data, data_size, ENET_PACKET_FLAG_RELIABLE);
 	enet_peer_send(peer, 0, packet);
 }
 
+#include "source/netty/NettyRegistry.h"
+#include "source/netty/PacketLoader.h"
+
 int main()
 {
+	using namespace Cosmos::Netty;
+	NettyRegistry registry;
+	
+	loadPackets(registry);
+	
 	std::atomic_bool isRunning{true};
+	
+	std::vector<ENetPeer*> peers;
 	
 	std::thread console([&]()
 	{
 		std::string line;
 		while (isRunning)
 		{
-			std::cout << "Type a command.\n> ";
+			std::cout << "> ";
 			std::getline(std::cin, line);
 			if (line == "exit")
 			{
 				isRunning = false;
+			}
+			else if(line == "help")
+			{
+				std::cout << "exit - Stop execution.\n";
+			}
+			else
+			{
+				auto aroundSpaces = split(line, ' ');
+				
+				if(!aroundSpaces.empty())
+				{
+					if(aroundSpaces[0] == "say")
+					{
+						int textStart = 4;
+						
+						std::cout << &line.c_str()[textStart] << '\n';
+						
+						PacketData* pdata = registry.createPacketData(line.size() - 3, Cosmos::Netty::PacketIdentifiers::ID_TEST);
+						
+						std::memcpy(pdata->data(), &line.c_str()[textStart], line.size() - 3);
+						
+						for(auto *peer: peers)
+						{
+							registry.sendData(*pdata, *peer);
+						}
+						
+						registry.deletePacketData(pdata);
+					}
+					else
+					{
+						std::cout << "Unknown command, type help for help.\n";
+					}
+				}
 			}
 		}
 	});
@@ -82,28 +208,51 @@ int main()
 						   event.peer->address.port,
 						   (char*)event.peer->data);
 					
+					
+					peers.push_back(event.peer);
+					
 					break;
 				}
 				case ENET_EVENT_TYPE_RECEIVE:
 				{
 					if(event.packet->dataLength > 0)
 					{
-						std::stringstream ss((char*)event.packet->data); // Use std::ios::binary if filestream
-						std::string str = ss.str();
-						std::cout << str << std::endl;
+						PacketData* data = registry.createPacketData(event.packet->data, event.packet->dataLength);
+						
+						auto pid = registry.extractIdentifier(*data);
+						if(pid != NettyRegistry::INVALID_IDENTIFIER)
+						{
+							registry.runCallback(pid, *data, *event.peer);
+						}
+						else
+						{
+							std::cerr << "Invalid Packet Identifier Received: " << pid << '\n';
+						}
+						
+						registry.deletePacketData(data);
 					}
 					
 					enet_packet_destroy(event.packet);
 					
-					SendPacket(event.peer, "Got your message!");
+//					sendPacket(event.peer, "Got your message!", strlen("Got your message!") + 1);
 					
 					break;
 				}
 				case ENET_EVENT_TYPE_DISCONNECT:
 				{
-					printf("%s disconnected\n", event.peer->data);
-					event.peer->data = NULL;
+					printf("%s disconnected\n", (char*)event.peer->data);
+					for(int i = 0; i < peers.size(); i++)
+					{
+						if(peers[i] == event.peer)
+						{
+							peers.erase(peers.begin() + i);
+							break;
+						}
+					}
+					event.peer->data = nullptr;
 				}
+				default:
+					break;
 			}
 		}
 	}

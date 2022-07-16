@@ -26,6 +26,8 @@
 #include <memory>
 #include <thread>
 #include <source/block/Blocks.h>
+#include <source/netty/NettyRegistry.h>
+#include <source/netty/PacketLoader.h>
 
 #include "source/rendering/RenderedStructure.h"
 #include "source/rendering/DirtyNeedsRendered.h"
@@ -33,6 +35,7 @@
 #include "source/rendering/NeedsOpenGLUpdated.h"
 
 #include "source/world/ClientWorld.h"
+#include "source/netty/Constants.h"
 
 inline Ogre::Vector3 to(const q3::q3Vec3& v)
 {
@@ -351,12 +354,13 @@ int main232323()
 	}
 	
 	world.destroyEntity(structEnt);
+	
+	return 0;
 }
 #endif
 
 
-//! [main]
-int main(int argc, char *argv[])
+int main23423(int argc, char *argv[])
 {
 	MyTestApp app;
 	app.initApp();
@@ -410,23 +414,119 @@ int main(int argc, char *argv[])
 	app.closeApp();
 	return 0;
 }
-//! [main]
 
-int main33()
+int main()
 {
-	ENetHost* client;
+	using namespace Cosmos::Netty;
+	NettyRegistry registry;
 	
-	// NULL = client host
-	client = enet_host_create(NULL, 1, 8, 0, 0);
+	loadPackets(registry);
 	
-	if(!client)
+	if(enet_initialize() != 0)
 	{
-		std::cerr << "Unable to create enet client host." << std::endl;
+		fprintf(stderr, "An error occurred while initializing ENet!\n");
+		return EXIT_FAILURE;
+	}
+	atexit(enet_deinitialize);
+	
+	ENetHost* client;
+	client = enet_host_create(nullptr, 1, 1, 0, 0);
+	
+	if(client == nullptr)
+	{
+		fprintf(stderr, "An error occurred while trying to create an ENet client host!\n");
 		return EXIT_FAILURE;
 	}
 	
+	ENetAddress address;
+	ENetPeer* peer;
 	
-	enet_host_destroy(client);
+	enet_address_set_host(&address, "127.0.0.1");
+	address.port = Cosmos::Netty::DEFAULT_PORT;
+	
+	peer = enet_host_connect(client, &address, 1, 0);
+	if(peer == nullptr)
+	{
+		fprintf(stderr, "No available peers for initiating an ENet connection!\n");
+		return EXIT_FAILURE;
+	}
+	
+	ENetEvent event;
+	if(enet_host_service(client, &event, 5000) > 0 &&
+	   event.type == ENET_EVENT_TYPE_CONNECT)
+	{
+		std::cout << "Connection to 127.0.0.1:7777 succeeded.\n";
+	}
+	else
+	{
+		enet_peer_reset(peer);
+		std::cerr << "Connection to 127.0.0.1:7777 failed.\n";
+		return EXIT_SUCCESS;
+	}
+	
+	bool connected = true;
+	
+	while(connected)
+	{
+		while (enet_host_service(client, &event, 0) > 0)
+		{
+			switch (event.type)
+			{
+				case ENET_EVENT_TYPE_RECEIVE:
+				{
+//					printf("A packet of length %lu containing %s was received from %x:%u on channel %u.\n",
+//						   event.packet->dataLength,
+//						   event.packet->data,
+//						   event.peer->address.host,
+//						   event.peer->address.port,
+//						   event.channelID);
+					
+					PacketData* data = registry.createPacketData(event.packet->data, event.packet->dataLength);
+					
+					auto pid = registry.extractIdentifier(*data);
+					if(pid != NettyRegistry::INVALID_IDENTIFIER)
+					{
+						registry.runCallback(pid, *data, *event.peer);
+					}
+					else
+					{
+						std::cerr << "Invalid Packet Identifier Received.\n";
+					}
+					
+					registry.deletePacketData(data);
+					
+					enet_packet_destroy(event.packet);
+					
+//					char *sendData = new char[7];
+//
+//					sendData[4] = 'h';
+//					sendData[5] = 'i';
+//					sendData[6] = '!';
+//
+//					((int *) sendData)[0] = 1;
+//
+//					sendPacket(event.peer, sendData, 7);
+//
+//					delete[] sendData;
+					
+					break;
+				}
+				case ENET_EVENT_TYPE_CONNECT:
+					std::cout << "Successfully Connected!\n";
+					break;
+				case ENET_EVENT_TYPE_DISCONNECT:
+					std::cout << "Disconnected!\n";
+					connected = false;
+					break;
+				default:
+					break;
+			}
+		}
+		
+		std::this_thread::sleep_for(std::chrono::milliseconds(16));
+	}
+	
+	// enet_peer_disconnect to disconnect
 	
 	return 0;
 }
