@@ -9,6 +9,9 @@
 
 #include "IHasBlockChangeCallback.h"
 
+#include "../observer/Observable.h"
+#include <map>
+
 namespace Cosmos
 {
 	class Entity;
@@ -16,8 +19,9 @@ namespace Cosmos
 	/**
 	 * Represents a collection of chunks
 	 */
-	class Structure : public Component
+	class Structure
 	{
+	
 	
 	private:
 		Chunk* m_chunks;
@@ -29,7 +33,7 @@ namespace Cosmos
 		std::vector<IHasBlockChangeCallback*> m_BlockCallbacks;
 		
 		const int m_id;
-	
+		
 	public:
 		/**
 		 * Represents a collection of chunks
@@ -38,13 +42,9 @@ namespace Cosmos
 		 * @param chunksZ The number of chunks in the Z direction
 		 */
 		Structure(int chunksX, int chunksY, int chunksZ);
-		~Structure() override;
+		~Structure();
 		
 		[[nodiscard]] bool withinBlocks(int x, int y, int z) const;
-		
-		[[nodiscard]] int id() const override;
-		
-		[[nodiscard]] static int STATIC_ID();
 		
 		/**
 		 * Gets the type of block where 0,0,0 is the left bottom back and right top front
@@ -105,6 +105,6 @@ namespace Cosmos
 		
 		[[nodiscard]] const Chunk& chunkAt(int cx, int cy, int cz);
 		
-		void addBlockChangeListener(IHasBlockChangeCallback* callback);
+		void addBlockChangeObserver(IHasBlockChangeCallback* callback);
 	};
 }

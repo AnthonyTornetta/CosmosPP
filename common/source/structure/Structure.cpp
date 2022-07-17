@@ -66,23 +66,6 @@ namespace Cosmos
 		return x >= 0 && x < blocksWidth() && y >= 0 && y < blocksHeight() && z >= 0 && z < blocksLength();
 	}
 	
-	int Structure::id() const
-	{
-		return m_id;
-	}
-	
-	int Structure::STATIC_ID()
-	{
-		static int id = ComponentIDs::createID();
-		
-		return id;
-	}
-	
-	void Structure::addBlockChangeListener(IHasBlockChangeCallback* callback)
-	{
-		m_BlockCallbacks.push_back(callback);
-	}
-	
 	const Chunk &Structure::chunkAt(int cx, int cy, int cz)
 	{
 		assert(cx >= 0 && cx < chunksWidth());

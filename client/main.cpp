@@ -497,18 +497,6 @@ int main()
 					
 					enet_packet_destroy(event.packet);
 					
-//					char *sendData = new char[7];
-//
-//					sendData[4] = 'h';
-//					sendData[5] = 'i';
-//					sendData[6] = '!';
-//
-//					((int *) sendData)[0] = 1;
-//
-//					sendPacket(event.peer, sendData, 7);
-//
-//					delete[] sendData;
-					
 					break;
 				}
 				case ENET_EVENT_TYPE_CONNECT:
