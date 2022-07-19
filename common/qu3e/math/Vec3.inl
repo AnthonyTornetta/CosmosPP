@@ -30,7 +30,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	inline void q3Identity(Vec3 &v)
 	{
-		v.Set(r32(0.0), r32(0.0), r32(0.0));
+		v.Set(float(0.0), float(0.0), float(0.0));
 	}
 
 //--------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3Dot(const Vec3 &a, const Vec3 &b)
+	inline float q3Dot(const Vec3 &a, const Vec3 &b)
 	{
 		return a.x * b.x + a.y * b.y + a.z * b.z;
 	}
@@ -56,13 +56,13 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3Length(const Vec3 &v)
+	inline float q3Length(const Vec3 &v)
 	{
 		return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3LengthSq(const Vec3 &v)
+	inline float q3LengthSq(const Vec3 &v)
 	{
 		return v.x * v.x + v.y * v.y + v.z * v.z;
 	}
@@ -70,11 +70,11 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	inline const Vec3 q3Normalize(const Vec3 &v)
 	{
-		r32 l = q3Length(v);
+		float l = q3Length(v);
 		
-		if (l != r32(0.0))
+		if (l != float(0.0))
 		{
-			r32 inv = r32(1.0) / l;
+			float inv = float(1.0) / l;
 			return v * inv;
 		}
 		
@@ -82,21 +82,21 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3Distance(const Vec3 &a, const Vec3 &b)
+	inline float q3Distance(const Vec3 &a, const Vec3 &b)
 	{
-		r32 xp = a.x - b.x;
-		r32 yp = a.y - b.y;
-		r32 zp = a.z - b.z;
+		float xp = a.x - b.x;
+		float yp = a.y - b.y;
+		float zp = a.z - b.z;
 		
 		return std::sqrt(xp * xp + yp * yp + zp * zp);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3DistanceSq(const Vec3 &a, const Vec3 &b)
+	inline float q3DistanceSq(const Vec3 &a, const Vec3 &b)
 	{
-		r32 xp = a.x - b.x;
-		r32 yp = a.y - b.y;
-		r32 zp = a.z - b.z;
+		float xp = a.x - b.x;
+		float yp = a.y - b.y;
+		float zp = a.z - b.z;
 		
 		return xp * xp + yp * yp + zp * zp;
 	}
@@ -120,13 +120,13 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const r32 q3MinPerElem(const Vec3 &a)
+	inline const float q3MinPerElem(const Vec3 &a)
 	{
 		return q3Min(a.x, q3Min(a.y, a.z));
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const r32 q3MaxPerElem(const Vec3 &a)
+	inline const float q3MaxPerElem(const Vec3 &a)
 	{
 		return q3Max(a.x, q3Max(a.y, a.z));
 	}

@@ -42,29 +42,29 @@ namespace q3
 	public:
 		union
 		{
-			r32 v[4];
+			float v[4];
 			
 			struct
 			{
-				r32 x;
-				r32 y;
-				r32 z;
+				float x;
+				float y;
+				float z;
 				
-				r32 w;
+				float w;
 			};
 		};
 		
 		q3Quaternion();
 		
-		q3Quaternion(r32 a, r32 b, r32 c, r32 d);
+		q3Quaternion(float a, float b, float c, float d);
 		
-		q3Quaternion(const Vec3 &axis, r32 radians);
+		q3Quaternion(const Vec3 &axis, float radians);
 		
-		void Set(const Vec3 &axis, r32 radians);
+		void Set(const Vec3 &axis, float radians);
 		
-		void ToAxisAngle(Vec3 *axis, r32 *angle) const;
+		void ToAxisAngle(Vec3 *axis, float *angle) const;
 		
-		void Integrate(const Vec3 &dv, r32 dt);
+		void Integrate(const Vec3 &dv, float dt);
 		
 		const q3Quaternion operator*(const q3Quaternion &rhs) const;
 		
@@ -76,19 +76,19 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	inline const q3Quaternion q3Normalize(const q3Quaternion &q)
 	{
-		r32 x = q.x;
-		r32 y = q.y;
-		r32 z = q.z;
-		r32 w = q.w;
+		float x = q.x;
+		float y = q.y;
+		float z = q.z;
+		float w = q.w;
 		
-		r32 d = q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z;
+		float d = q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z;
 		
 		if (d == 0)
-			w = r32(1.0);
+			w = float(1.0);
 		
-		d = r32(1.0) / std::sqrt(d);
+		d = float(1.0) / std::sqrt(d);
 		
-		if (d > r32(1.0e-8))
+		if (d > float(1.0e-8))
 		{
 			x *= d;
 			y *= d;

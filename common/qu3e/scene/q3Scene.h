@@ -81,7 +81,7 @@ namespace q3
 	class q3Scene
 	{
 	public:
-		q3Scene(r32 dt, const Vec3 &gravity = Vec3(r32(0.0), r32(0.0), r32(0.0)), i32 iterations = 20);
+		q3Scene(float dt, const Vec3 &gravity = Vec3(float(0.0), float(0.0), float(0.0)), int iterations = 20);
 		
 		~q3Scene();
 		
@@ -110,7 +110,7 @@ namespace q3
 		// realistic (convergent). A good iteration number range is 5 to 20.
 		// Only positive numbers are accepted. Non-positive and negative
 		// inputs set the iteration count to 1.
-		void SetIterations(i32 iterations);
+		void SetIterations(int iterations);
 		
 		// Friction occurs when two rigid bodies have shapes that slide along one
 		// another. The friction force resists this sliding motion.
@@ -161,15 +161,15 @@ namespace q3
 		q3ContactManager m_contactManager;
 		q3PagedAllocator m_boxAllocator;
 		
-		i32 m_bodyCount;
+		int m_bodyCount;
 		q3Body *m_bodyList;
 		
 		q3Stack m_stack;
 		q3Heap m_heap;
 		
 		Vec3 m_gravity;
-		r32 m_dt;
-		i32 m_iterations;
+		float m_dt;
+		int m_iterations;
 		
 		bool m_newBox;
 		bool m_allowSleep;

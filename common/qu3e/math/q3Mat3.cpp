@@ -38,7 +38,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	q3Mat3::q3Mat3(r32 a, r32 b, r32 c, r32 d, r32 e, r32 f, r32 g, r32 h, r32 i)
+	q3Mat3::q3Mat3(float a, float b, float c, float d, float e, float f, float g, float h, float i)
 			: ex(a, b, c), ey(d, e, f), ez(g, h, i)
 	{
 	}
@@ -50,7 +50,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Mat3::Set(r32 a, r32 b, r32 c, r32 d, r32 e, r32 f, r32 g, r32 h, r32 i)
+	void q3Mat3::Set(float a, float b, float c, float d, float e, float f, float g, float h, float i)
 	{
 		ex.Set(a, b, c);
 		ey.Set(d, e, f);
@@ -58,17 +58,17 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Mat3::Set(const Vec3 &axis, r32 angle)
+	void q3Mat3::Set(const Vec3 &axis, float angle)
 	{
-		r32 s = std::sin(angle);
-		r32 c = std::cos(angle);
-		r32 x = axis.x;
-		r32 y = axis.y;
-		r32 z = axis.z;
-		r32 xy = x * y;
-		r32 yz = y * z;
-		r32 zx = z * x;
-		r32 t = r32(1.0) - c;
+		float s = std::sin(angle);
+		float c = std::cos(angle);
+		float x = axis.x;
+		float y = axis.y;
+		float z = axis.z;
+		float xy = x * y;
+		float yz = y * z;
+		float zx = z * x;
+		float t = float(1.0) - c;
 		
 		Set(
 				x * x * t + c, xy * t + z * s, zx * t - y * s,
@@ -104,7 +104,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	q3Mat3 &q3Mat3::operator*=(r32 f)
+	q3Mat3 &q3Mat3::operator*=(float f)
 	{
 		ex *= f;
 		ey *= f;
@@ -207,7 +207,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Mat3 q3Mat3::operator*(r32 f) const
+	const q3Mat3 q3Mat3::operator*(float f) const
 	{
 		return q3Mat3(ex * f, ey * f, ez * f);
 	}

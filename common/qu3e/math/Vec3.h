@@ -31,11 +31,11 @@
 
 namespace q3
 {
-	r32 q3Abs(r32 a);
+	float q3Abs(float a);
 	
-	r32 q3Min(r32 a, r32 b);
+	float q3Min(float a, float b);
 	
-	r32 q3Max(r32 a, r32 b);
+	float q3Max(float a, float b);
 
 //--------------------------------------------------------------------------------------------------
 // Vec3
@@ -44,35 +44,35 @@ namespace q3
 	{
 		union
 		{
-			r32 v[3];
+			float v[3];
 			
 			struct
 			{
-				r32 x;
-				r32 y;
-				r32 z;
+				float x;
+				float y;
+				float z;
 			};
 		};
 		
 		Vec3();
 		
-		Vec3(r32 _x, r32 _y, r32 _z);
+		Vec3(float _x, float _y, float _z);
 		
-		void Set(r32 _x, r32 _y, r32 _z);
+		void Set(float _x, float _y, float _z);
 		
-		void SetAll(r32 a);
+		void SetAll(float a);
 		
 		Vec3 &operator+=(const Vec3 &rhs);
 		
 		Vec3 &operator-=(const Vec3 &rhs);
 		
-		Vec3 &operator*=(r32 f);
+		Vec3 &operator*=(float f);
 		
-		Vec3 &operator/=(r32 f);
+		Vec3 &operator/=(float f);
 		
-		r32 &operator[](u32 i);
+		float &operator[](u32 i);
 		
-		r32 operator[](u32 i) const;
+		float operator[](u32 i) const;
 		
 		Vec3 operator-(void) const;
 		
@@ -80,9 +80,9 @@ namespace q3
 		
 		const Vec3 operator-(const Vec3 &rhs) const;
 		
-		const Vec3 operator*(r32 f) const;
+		const Vec3 operator*(float f) const;
 		
-		const Vec3 operator/(r32 f) const;
+		const Vec3 operator/(float f) const;
 	};
 }
 

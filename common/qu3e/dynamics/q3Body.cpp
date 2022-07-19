@@ -44,7 +44,7 @@ namespace q3
 		m_q.Set(q3Normalize(def.axis), def.angle);
 		m_tx.rotation = m_q.ToMat3();
 		m_tx.position = def.position;
-		m_sleepTime = r32(0.0);
+		m_sleepTime = float(0.0);
 		m_gravityScale = def.gravityScale;
 		m_layers = def.layers;
 		m_userData = def.userData;
@@ -230,7 +230,7 @@ namespace q3
 		if (!(m_flags & eAwake))
 		{
 			m_flags |= eAwake;
-			m_sleepTime = r32(0.0);
+			m_sleepTime = float(0.0);
 		}
 	}
 
@@ -238,7 +238,7 @@ namespace q3
 	void q3Body::SetToSleep()
 	{
 		m_flags &= ~eAwake;
-		m_sleepTime = r32(0.0);
+		m_sleepTime = float(0.0);
 		q3Identity(m_linearVelocity);
 		q3Identity(m_angularVelocity);
 		q3Identity(m_force);
@@ -252,25 +252,25 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	r32 q3Body::GetMass() const
+	float q3Body::GetMass() const
 	{
 		return m_mass;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	r32 q3Body::GetInvMass() const
+	float q3Body::GetInvMass() const
 	{
 		return m_invMass;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	r32 q3Body::GetGravityScale() const
+	float q3Body::GetGravityScale() const
 	{
 		return m_gravityScale;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetGravityScale(r32 scale)
+	void q3Body::SetGravityScale(float scale)
 	{
 		m_gravityScale = scale;
 	}
@@ -321,7 +321,7 @@ namespace q3
 		if (m_flags & eStatic)
 			assert(false);
 		
-		if (q3Dot(v, v) > r32(0.0))
+		if (q3Dot(v, v) > float(0.0))
 		{
 			SetToAwake();
 		}
@@ -342,7 +342,7 @@ namespace q3
 		if (m_flags & eStatic)
 			assert(false);
 		
-		if (q3Dot(v, v) > r32(0.0))
+		if (q3Dot(v, v) > float(0.0))
 		{
 			SetToAwake();
 		}
@@ -381,7 +381,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetTransform(const Vec3 &position, const Vec3 &axis, r32 angle)
+	void q3Body::SetTransform(const Vec3 &position, const Vec3 &axis, float angle)
 	{
 		m_worldCenter = position;
 		m_q.Set(axis, angle);
@@ -391,19 +391,19 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	i32 q3Body::GetFlags() const
+	int q3Body::GetFlags() const
 	{
 		return m_flags;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetLayers(i32 layers)
+	void q3Body::SetLayers(int layers)
 	{
 		m_layers = layers;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	i32 q3Body::GetLayers() const
+	int q3Body::GetLayers() const
 	{
 		return m_layers;
 	}
@@ -421,25 +421,25 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetLinearDamping(r32 damping)
+	void q3Body::SetLinearDamping(float damping)
 	{
 		m_linearDamping = damping;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	r32 q3Body::GetLinearDamping(r32 damping) const
+	float q3Body::GetLinearDamping(float damping) const
 	{
 		return m_linearDamping;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetAngularDamping(r32 damping)
+	void q3Body::SetAngularDamping(float damping)
 	{
 		m_angularDamping = damping;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	r32 q3Body::GetAngularDamping(r32 damping) const
+	float q3Body::GetAngularDamping(float damping) const
 	{
 		return m_angularDamping;
 	}
@@ -458,7 +458,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::Dump(FILE *file, i32 index) const
+	void q3Body::Dump(FILE *file, int index) const
 	{
 		fprintf(file, "{\n");
 		fprintf(file, "\tq3BodyDef bd;\n");
@@ -478,18 +478,18 @@ namespace q3
 				break;
 		}
 		
-		fprintf(file, "\tbd.position.Set( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", m_tx.position.x,
+		fprintf(file, "\tbd.position.Set( float( %.15lf ), float( %.15lf ), float( %.15lf ) );\n", m_tx.position.x,
 				m_tx.position.y, m_tx.position.z);
 		Vec3 axis;
-		r32 angle;
+		float angle;
 		m_q.ToAxisAngle(&axis, &angle);
-		fprintf(file, "\tbd.axis.Set( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", axis.x, axis.y, axis.z);
-		fprintf(file, "\tbd.angle = r32( %.15lf );\n", angle);
-		fprintf(file, "\tbd.linearVelocity.Set( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", m_linearVelocity.x,
+		fprintf(file, "\tbd.axis.Set( float( %.15lf ), float( %.15lf ), float( %.15lf ) );\n", axis.x, axis.y, axis.z);
+		fprintf(file, "\tbd.angle = float( %.15lf );\n", angle);
+		fprintf(file, "\tbd.linearVelocity.Set( float( %.15lf ), float( %.15lf ), float( %.15lf ) );\n", m_linearVelocity.x,
 				m_linearVelocity.y, m_linearVelocity.z);
-		fprintf(file, "\tbd.angularVelocity.Set( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", m_angularVelocity.x,
+		fprintf(file, "\tbd.angularVelocity.Set( float( %.15lf ), float( %.15lf ), float( %.15lf ) );\n", m_angularVelocity.x,
 				m_angularVelocity.y, m_angularVelocity.z);
-		fprintf(file, "\tbd.gravityScale = r32( %.15lf );\n", m_gravityScale);
+		fprintf(file, "\tbd.gravityScale = float( %.15lf );\n", m_gravityScale);
 		fprintf(file, "\tbd.layers = %d;\n", m_layers);
 		fprintf(file, "\tbd.allowSleep = bool( %d );\n", m_flags & eAllowSleep);
 		fprintf(file, "\tbd.awake = bool( %d );\n", m_flags & eAwake);
@@ -505,26 +505,26 @@ namespace q3
 		{
 			fprintf(file, "\t{\n");
 			fprintf(file, "\t\tq3BoxDef sd;\n");
-			fprintf(file, "\t\tsd.SetFriction( r32( %.15lf ) );\n", box->friction);
-			fprintf(file, "\t\tsd.SetRestitution( r32( %.15lf ) );\n", box->restitution);
-			fprintf(file, "\t\tsd.SetDensity( r32( %.15lf ) );\n", box->density);
-			i32 sensor = (int) box->sensor;
+			fprintf(file, "\t\tsd.SetFriction( float( %.15lf ) );\n", box->friction);
+			fprintf(file, "\t\tsd.SetRestitution( float( %.15lf ) );\n", box->restitution);
+			fprintf(file, "\t\tsd.SetDensity( float( %.15lf ) );\n", box->density);
+			int sensor = (int) box->sensor;
 			fprintf(file, "\t\tsd.SetSensor( bool( %d ) );\n", sensor);
 			fprintf(file, "\t\tq3Transform boxTx;\n");
 			q3Transform boxTx = box->local;
 			Vec3 xAxis = boxTx.rotation.ex;
 			Vec3 yAxis = boxTx.rotation.ey;
 			Vec3 zAxis = boxTx.rotation.ez;
-			fprintf(file, "\t\tVec3 xAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", xAxis.x, xAxis.y,
+			fprintf(file, "\t\tVec3 xAxis( float( %.15lf ), float( %.15lf ), float( %.15lf ) );\n", xAxis.x, xAxis.y,
 					xAxis.z);
-			fprintf(file, "\t\tVec3 yAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", yAxis.x, yAxis.y,
+			fprintf(file, "\t\tVec3 yAxis( float( %.15lf ), float( %.15lf ), float( %.15lf ) );\n", yAxis.x, yAxis.y,
 					yAxis.z);
-			fprintf(file, "\t\tVec3 zAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", zAxis.x, zAxis.y,
+			fprintf(file, "\t\tVec3 zAxis( float( %.15lf ), float( %.15lf ), float( %.15lf ) );\n", zAxis.x, zAxis.y,
 					zAxis.z);
 			fprintf(file, "\t\tboxTx.rotation.SetRows( xAxis, yAxis, zAxis );\n");
-			fprintf(file, "\t\tboxTx.position.Set( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", boxTx.position.x,
+			fprintf(file, "\t\tboxTx.position.Set( float( %.15lf ), float( %.15lf ), float( %.15lf ) );\n", boxTx.position.x,
 					boxTx.position.y, boxTx.position.z);
-			fprintf(file, "\t\tsd.Set( boxTx, Vec3( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) ) );\n",
+			fprintf(file, "\t\tsd.Set( boxTx, Vec3( float( %.15lf ), float( %.15lf ), float( %.15lf ) ) );\n",
 					box->e.x * 2.0f, box->e.y * 2.0f, box->e.z * 2.0f);
 			fprintf(file, "\t\tbodies[ %d ]->AddBox( sd );\n", index);
 			fprintf(file, "\t}\n");
@@ -537,12 +537,12 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	void q3Body::CalculateMassData()
 	{
-		q3Mat3 inertia = q3Diagonal(r32(0.0));
-		m_invInertiaModel = q3Diagonal(r32(0.0));
-		m_invInertiaWorld = q3Diagonal(r32(0.0));
-		m_invMass = r32(0.0);
-		m_mass = r32(0.0);
-		r32 mass = r32(0.0);
+		q3Mat3 inertia = q3Diagonal(float(0.0));
+		m_invInertiaModel = q3Diagonal(float(0.0));
+		m_invInertiaWorld = q3Diagonal(float(0.0));
+		m_invMass = float(0.0);
+		m_mass = float(0.0);
+		float mass = float(0.0);
 		
 		if (m_flags & eStatic || m_flags & eKinematic)
 		{
@@ -556,7 +556,7 @@ namespace q3
 		
 		for (q3Box *box = m_boxes; box; box = box->next)
 		{
-			if (box->density == r32(0.0))
+			if (box->density == float(0.0))
 				continue;
 			
 			q3MassData md;
@@ -566,10 +566,10 @@ namespace q3
 			lc += md.center * md.mass;
 		}
 		
-		if (mass > r32(0.0))
+		if (mass > float(0.0))
 		{
 			m_mass = mass;
-			m_invMass = r32(1.0) / mass;
+			m_invMass = float(1.0) / mass;
 			lc *= m_invMass;
 			q3Mat3 identity;
 			q3Identity(identity);
@@ -592,9 +592,9 @@ namespace q3
 		} else
 		{
 			// Force all dynamic bodies to have some mass
-			m_invMass = r32(1.0);
-			m_invInertiaModel = q3Diagonal(r32(0.0));
-			m_invInertiaWorld = q3Diagonal(r32(0.0));
+			m_invMass = float(1.0);
+			m_invInertiaModel = q3Diagonal(float(0.0));
+			m_invInertiaWorld = q3Diagonal(float(0.0));
 		}
 		
 		m_localCenter = lc;

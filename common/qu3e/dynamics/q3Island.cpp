@@ -41,7 +41,7 @@ namespace q3
 	{
 		// Apply gravity
 		// Integrate velocities and create state buffers, calculate world inertia
-		for (i32 i = 0; i < m_bodyCount; ++i)
+		for (int i = 0; i < m_bodyCount; ++i)
 		{
 			q3Body *body = m_bodies[i];
 			q3VelocityState *v = m_velocities + i;
@@ -67,8 +67,8 @@ namespace q3
 				// v2 = exp(-c * dt) * v1
 				// Pade approximation:
 				// v2 = v1 * 1 / (1 + c * dt)
-				body->m_linearVelocity *= r32(1.0) / (r32(1.0) + m_dt * body->m_linearDamping);
-				body->m_angularVelocity *= r32(1.0) / (r32(1.0) + m_dt * body->m_angularDamping);
+				body->m_linearVelocity *= float(1.0) / (float(1.0) + m_dt * body->m_linearDamping);
+				body->m_angularVelocity *= float(1.0) / (float(1.0) + m_dt * body->m_angularDamping);
 			}
 			
 			v->v = body->m_linearVelocity;
@@ -82,14 +82,14 @@ namespace q3
 		contactSolver.PreSolve(m_dt);
 		
 		// Solve contacts
-		for (i32 i = 0; i < m_iterations; ++i)
+		for (int i = 0; i < m_iterations; ++i)
 			contactSolver.Solve();
 		
 		contactSolver.ShutDown();
 		
 		// Copy back state buffers
 		// Integrate positions
-		for (i32 i = 0; i < m_bodyCount; ++i)
+		for (int i = 0; i < m_bodyCount; ++i)
 		{
 			q3Body *body = m_bodies[i];
 			q3VelocityState *v = m_velocities + i;
@@ -110,23 +110,23 @@ namespace q3
 		if (m_allowSleep)
 		{
 			// Find minimum sleep time of the entire island
-			f32 minSleepTime = Q3_R32_MAX;
-			for (i32 i = 0; i < m_bodyCount; ++i)
+			float minSleepTime = Q3_float_MAX;
+			for (int i = 0; i < m_bodyCount; ++i)
 			{
 				q3Body *body = m_bodies[i];
 				
 				if (body->m_flags & q3Body::eStatic)
 					continue;
 				
-				const r32 sqrLinVel = q3Dot(body->m_linearVelocity, body->m_linearVelocity);
-				const r32 cbAngVel = q3Dot(body->m_angularVelocity, body->m_angularVelocity);
-				const r32 linTol = Q3_SLEEP_LINEAR;
-				const r32 angTol = Q3_SLEEP_ANGULAR;
+				const float sqrLinVel = q3Dot(body->m_linearVelocity, body->m_linearVelocity);
+				const float cbAngVel = q3Dot(body->m_angularVelocity, body->m_angularVelocity);
+				const float linTol = Q3_SLEEP_LINEAR;
+				const float angTol = Q3_SLEEP_ANGULAR;
 				
 				if (sqrLinVel > linTol || cbAngVel > angTol)
 				{
-					minSleepTime = r32(0.0);
-					body->m_sleepTime = r32(0.0);
+					minSleepTime = float(0.0);
+					body->m_sleepTime = float(0.0);
 				} else
 				{
 					body->m_sleepTime += m_dt;
@@ -140,7 +140,7 @@ namespace q3
 			// and sleep test will be tried again.
 			if (minSleepTime > Q3_SLEEP_TIME)
 			{
-				for (i32 i = 0; i < m_bodyCount; ++i)
+				for (int i = 0; i < m_bodyCount; ++i)
 					m_bodies[i]->SetToSleep();
 			}
 		}
@@ -167,7 +167,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	void q3Island::Initialize()
 	{
-		for (i32 i = 0; i < m_contactCount; ++i)
+		for (int i = 0; i < m_contactCount; ++i)
 		{
 			q3ContactConstraint *cc = m_contacts[i];
 			
@@ -188,7 +188,7 @@ namespace q3
 			c->tangentVectors[1] = cc->manifold.tangentVectors[1];
 			c->contactCount = cc->manifold.contactCount;
 			
-			for (i32 j = 0; j < c->contactCount; ++j)
+			for (int j = 0; j < c->contactCount; ++j)
 			{
 				q3ContactState *s = c->contacts + j;
 				q3Contact *cp = cc->manifold.contacts + j;

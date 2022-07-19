@@ -43,7 +43,7 @@ namespace q3
 		
 		bool Contains(const Vec3 &point) const;
 		
-		r32 SurfaceArea() const;
+		float SurfaceArea() const;
 	};
 	
 	const q3AABB q3Combine(const q3AABB &a, const q3AABB &b);
@@ -55,7 +55,7 @@ namespace q3
 	{
 		q3HalfSpace();
 		
-		q3HalfSpace(const Vec3 &normal, r32 distance);
+		q3HalfSpace(const Vec3 &normal, float distance);
 		
 		void Set(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 		
@@ -63,12 +63,12 @@ namespace q3
 		
 		const Vec3 Origin() const;
 		
-		r32 Distance(const Vec3 &p) const;
+		float Distance(const Vec3 &p) const;
 		
 		const Vec3 Projected(const Vec3 &p) const;
 		
 		Vec3 normal;
-		r32 distance;
+		float distance;
 	};
 
 //--------------------------------------------------------------------------------------------------
@@ -78,12 +78,12 @@ namespace q3
 	{
 		Vec3 start;    // Beginning point of the ray
 		Vec3 dir;        // Direction of the ray (normalized)
-		r32 t;            // Time specifying ray endpoint
+		float t;            // Time specifying ray endpoint
 		
-		r32 toi;        // Solved time of impact
+		float toi;        // Solved time of impact
 		Vec3 normal;    // Surface normal at impact
 		
-		void Set(const Vec3 &startPoint, const Vec3 &direction, r32 endPointTime);
+		void Set(const Vec3 &startPoint, const Vec3 &direction, float endPointTime);
 		
 		// Uses toi, start and dir to compute the point at toi. Should
 		// only be called after a raycast has been conducted with a

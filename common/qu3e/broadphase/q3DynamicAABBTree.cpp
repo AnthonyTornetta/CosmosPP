@@ -35,7 +35,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	inline void FattenAABB(q3AABB &aabb)
 	{
-		const r32 k_fattener = r32(0.5);
+		const float k_fattener = float(0.5);
 		Vec3 v(k_fattener, k_fattener, k_fattener);
 		
 		aabb.min -= v;
@@ -61,9 +61,9 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	i32 q3DynamicAABBTree::Insert(const q3AABB &aabb, void *userData)
+	int q3DynamicAABBTree::Insert(const q3AABB &aabb, void *userData)
 	{
-		i32 id = AllocateNode();
+		int id = AllocateNode();
 		
 		// Fatten AABB and set height/userdata
 		m_nodes[id].aabb = aabb;
@@ -76,7 +76,7 @@ namespace q3
 		return id;
 	}
 	
-	void q3DynamicAABBTree::Remove(i32 id)
+	void q3DynamicAABBTree::Remove(int id)
 	{
 		assert(id >= 0 && id < m_capacity);
 		assert(m_nodes[id].IsLeaf());
@@ -85,7 +85,7 @@ namespace q3
 		DeallocateNode(id);
 	}
 	
-	bool q3DynamicAABBTree::Update(i32 id, const q3AABB &aabb)
+	bool q3DynamicAABBTree::Update(int id, const q3AABB &aabb)
 	{
 		assert(id >= 0 && id < m_capacity);
 		assert(m_nodes[id].IsLeaf());
@@ -103,14 +103,14 @@ namespace q3
 		return true;
 	}
 	
-	void *q3DynamicAABBTree::GetUserData(i32 id) const
+	void *q3DynamicAABBTree::GetUserData(int id) const
 	{
 		assert(id >= 0 && id < m_capacity);
 		
 		return m_nodes[id].userData;
 	}
 	
-	const q3AABB &q3DynamicAABBTree::GetFatAABB(i32 id) const
+	const q3AABB &q3DynamicAABBTree::GetFatAABB(int id) const
 	{
 		assert(id >= 0 && id < m_capacity);
 		
@@ -126,7 +126,7 @@ namespace q3
 		}
 	}
 	
-	void q3DynamicAABBTree::RenderNode(q3Render *render, i32 index) const
+	void q3DynamicAABBTree::RenderNode(q3Render *render, int index) const
 	{
 		assert(index >= 0 && index < m_capacity);
 		
@@ -166,8 +166,8 @@ namespace q3
 	void q3DynamicAABBTree::Validate() const
 	{
 		// Verify free list
-		i32 freeNodes = 0;
-		i32 index = m_freeList;
+		int freeNodes = 0;
+		int index = m_freeList;
 		
 		while (index != Node::Null)
 		{
@@ -189,12 +189,12 @@ namespace q3
 		}
 	}
 	
-	void q3DynamicAABBTree::ValidateStructure(i32 index) const
+	void q3DynamicAABBTree::ValidateStructure(int index) const
 	{
 		Node *n = m_nodes + index;
 		
-		i32 il = n->left;
-		i32 ir = n->right;
+		int il = n->left;
+		int ir = n->right;
 		
 		if (n->IsLeaf())
 		{
@@ -215,7 +215,7 @@ namespace q3
 		ValidateStructure(ir);
 	}
 	
-	i32 q3DynamicAABBTree::AllocateNode()
+	int q3DynamicAABBTree::AllocateNode()
 	{
 		if (m_freeList == Node::Null)
 		{
@@ -228,7 +228,7 @@ namespace q3
 			AddToFreeList(m_count);
 		}
 		
-		i32 freeNode = m_freeList;
+		int freeNode = m_freeList;
 		m_freeList = m_nodes[m_freeList].next;
 		m_nodes[freeNode].height = 0;
 		m_nodes[freeNode].left = Node::Null;
@@ -239,7 +239,7 @@ namespace q3
 		return freeNode;
 	}
 	
-	i32 q3DynamicAABBTree::Balance(i32 iA)
+	int q3DynamicAABBTree::Balance(int iA)
 	{
 		Node *A = m_nodes + iA;
 		
@@ -253,18 +253,18 @@ namespace q3
 		   D   E F   G
 		*/
 		
-		i32 iB = A->left;
-		i32 iC = A->right;
+		int iB = A->left;
+		int iC = A->right;
 		Node *B = m_nodes + iB;
 		Node *C = m_nodes + iC;
 		
-		i32 balance = C->height - B->height;
+		int balance = C->height - B->height;
 		
 		// C is higher, promote C
 		if (balance > 1)
 		{
-			i32 iF = C->left;
-			i32 iG = C->right;
+			int iF = C->left;
+			int iG = C->right;
 			Node *F = m_nodes + iF;
 			Node *G = m_nodes + iG;
 			
@@ -313,8 +313,8 @@ namespace q3
 			// B is higher, promote B
 		else if (balance < -1)
 		{
-			i32 iD = B->left;
-			i32 iE = B->right;
+			int iD = B->left;
+			int iE = B->right;
 			Node *D = m_nodes + iD;
 			Node *E = m_nodes + iE;
 			
@@ -362,7 +362,7 @@ namespace q3
 		return iA;
 	}
 	
-	void q3DynamicAABBTree::InsertLeaf(i32 id)
+	void q3DynamicAABBTree::InsertLeaf(int id)
 	{
 		if (m_root == Node::Null)
 		{
@@ -372,43 +372,43 @@ namespace q3
 		}
 		
 		// Search for sibling
-		i32 searchIndex = m_root;
+		int searchIndex = m_root;
 		q3AABB leafAABB = m_nodes[id].aabb;
 		while (!m_nodes[searchIndex].IsLeaf())
 		{
 			// Cost for insertion at index (branch node), involves creation
 			// of new branch to contain this index and the new leaf
 			q3AABB combined = q3Combine(leafAABB, m_nodes[searchIndex].aabb);
-			r32 combinedArea = combined.SurfaceArea();
-			r32 branchCost = r32(2.0) * combinedArea;
+			float combinedArea = combined.SurfaceArea();
+			float branchCost = float(2.0) * combinedArea;
 			
 			// Inherited cost (surface area growth from heirarchy update after descent)
-			r32 inheritedCost = r32(2.0) * (combinedArea - m_nodes[searchIndex].aabb.SurfaceArea());
+			float inheritedCost = float(2.0) * (combinedArea - m_nodes[searchIndex].aabb.SurfaceArea());
 			
-			i32 left = m_nodes[searchIndex].left;
-			i32 right = m_nodes[searchIndex].right;
+			int left = m_nodes[searchIndex].left;
+			int right = m_nodes[searchIndex].right;
 			
 			// Calculate costs for left/right descents. If traversal is to a leaf,
 			// then the cost of the combind AABB represents a new branch node. Otherwise
 			// the cost is only the inflation of the pre-existing branch.
-			r32 leftDescentCost;
+			float leftDescentCost;
 			if (m_nodes[left].IsLeaf())
 				leftDescentCost = q3Combine(leafAABB, m_nodes[left].aabb).SurfaceArea() + inheritedCost;
 			else
 			{
-				r32 inflated = q3Combine(leafAABB, m_nodes[left].aabb).SurfaceArea();
-				r32 branchArea = m_nodes[left].aabb.SurfaceArea();
+				float inflated = q3Combine(leafAABB, m_nodes[left].aabb).SurfaceArea();
+				float branchArea = m_nodes[left].aabb.SurfaceArea();
 				leftDescentCost = inflated - branchArea + inheritedCost;
 			}
 			
 			// Cost for right descent
-			r32 rightDescentCost;
+			float rightDescentCost;
 			if (m_nodes[right].IsLeaf())
 				rightDescentCost = q3Combine(leafAABB, m_nodes[right].aabb).SurfaceArea() + inheritedCost;
 			else
 			{
-				r32 inflated = q3Combine(leafAABB, m_nodes[right].aabb).SurfaceArea();
-				r32 branchArea = m_nodes[right].aabb.SurfaceArea();
+				float inflated = q3Combine(leafAABB, m_nodes[right].aabb).SurfaceArea();
+				float branchArea = m_nodes[right].aabb.SurfaceArea();
 				rightDescentCost = inflated - branchArea + inheritedCost;
 			}
 			
@@ -423,11 +423,11 @@ namespace q3
 				searchIndex = right;
 		}
 		
-		i32 sibling = searchIndex;
+		int sibling = searchIndex;
 		
 		// Create new parent
-		i32 oldParent = m_nodes[sibling].parent;
-		i32 newParent = AllocateNode();
+		int oldParent = m_nodes[sibling].parent;
+		int newParent = AllocateNode();
 		m_nodes[newParent].parent = oldParent;
 		m_nodes[newParent].userData = NULL;
 		m_nodes[newParent].aabb = q3Combine(leafAABB, m_nodes[sibling].aabb);
@@ -458,7 +458,7 @@ namespace q3
 		SyncHeirarchy(m_nodes[id].parent);
 	}
 	
-	void q3DynamicAABBTree::RemoveLeaf(i32 id)
+	void q3DynamicAABBTree::RemoveLeaf(int id)
 	{
 		if (id == m_root)
 		{
@@ -467,9 +467,9 @@ namespace q3
 		}
 		
 		// Setup parent, grandParent and sibling
-		i32 parent = m_nodes[id].parent;
-		i32 grandParent = m_nodes[parent].parent;
-		i32 sibling;
+		int parent = m_nodes[id].parent;
+		int grandParent = m_nodes[parent].parent;
+		int sibling;
 		
 		if (m_nodes[parent].left == id)
 			sibling = m_nodes[parent].right;
@@ -502,14 +502,14 @@ namespace q3
 		SyncHeirarchy(grandParent);
 	}
 	
-	void q3DynamicAABBTree::SyncHeirarchy(i32 index)
+	void q3DynamicAABBTree::SyncHeirarchy(int index)
 	{
 		while (index != Node::Null)
 		{
 			index = Balance(index);
 			
-			i32 left = m_nodes[index].left;
-			i32 right = m_nodes[index].right;
+			int left = m_nodes[index].left;
+			int right = m_nodes[index].right;
 			
 			m_nodes[index].height = 1 + q3Max(m_nodes[left].height, m_nodes[right].height);
 			m_nodes[index].aabb = q3Combine(m_nodes[left].aabb, m_nodes[right].aabb);

@@ -29,19 +29,8 @@
 
 namespace q3
 {
-	typedef float r32;
-	typedef double r64;
-	typedef float f32;
-	typedef double f64;
-	typedef signed char i8;
-	typedef signed short i16;
-	typedef signed int i32;
 	typedef unsigned char u8;
-	typedef unsigned short u16;
 	typedef unsigned int u32;
 }
-
-#define Q3_UNUSED(A) \
-    (void)A
 
 #endif // Q3TYPES_H

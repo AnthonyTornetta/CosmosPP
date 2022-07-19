@@ -36,7 +36,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // Memory Macros
 //--------------------------------------------------------------------------------------------------
-	inline void *q3Alloc(i32 bytes)
+	inline void *q3Alloc(int bytes)
 	{
 		return malloc(bytes);
 	}
@@ -59,7 +59,7 @@ namespace q3
 		struct q3StackEntry
 		{
 			u8 *data;
-			i32 size;
+			int size;
 		};
 	
 	public:
@@ -69,7 +69,7 @@ namespace q3
 		
 		void Reserve(u32 size);
 		
-		void *Allocate(i32 size);
+		void *Allocate(int size);
 		
 		void Free(void *data);
 	
@@ -79,9 +79,9 @@ namespace q3
 		
 		u32 m_index;
 		
-		i32 m_allocation;
-		i32 m_entryCount;
-		i32 m_entryCapacity;
+		int m_allocation;
+		int m_entryCount;
+		int m_entryCapacity;
 		u32 m_stackSize;
 	};
 
@@ -89,8 +89,8 @@ namespace q3
 // q3Heap
 //--------------------------------------------------------------------------------------------------
 // 20 MB heap size, change as necessary
-	const i32 q3k_heapSize = 1024 * 1024 * 20;
-	const i32 q3k_heapInitialCapacity = 1024;
+	const int q3k_heapSize = 1024 * 1024 * 20;
+	const int q3k_heapInitialCapacity = 1024;
 
 // Operates on first fit basis in attempt to improve cache coherency
 	class q3Heap
@@ -100,13 +100,13 @@ namespace q3
 		{
 			q3Header *next;
 			q3Header *prev;
-			i32 size;
+			int size;
 		};
 		
 		struct q3FreeBlock
 		{
 			q3Header *header;
-			i32 size;
+			int size;
 		};
 	
 	public:
@@ -114,7 +114,7 @@ namespace q3
 		
 		~q3Heap();
 		
-		void *Allocate(i32 size);
+		void *Allocate(int size);
 		
 		void Free(void *memory);
 	
@@ -122,8 +122,8 @@ namespace q3
 		q3Header *m_memory;
 		
 		q3FreeBlock *m_freeBlocks;
-		i32 m_freeBlockCount;
-		i32 m_freeBlockCapacity;
+		int m_freeBlockCount;
+		int m_freeBlockCapacity;
 	};
 
 //--------------------------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ namespace q3
 		};
 	
 	public:
-		q3PagedAllocator(i32 elementSize, i32 elementsPerPage);
+		q3PagedAllocator(int elementSize, int elementsPerPage);
 		
 		~q3PagedAllocator();
 		
@@ -154,11 +154,11 @@ namespace q3
 		void Clear();
 	
 	private:
-		i32 m_blockSize;
-		i32 m_blocksPerPage;
+		int m_blockSize;
+		int m_blocksPerPage;
 		
 		q3Page *m_pages;
-		i32 m_pageCount;
+		int m_pageCount;
 		
 		q3Block *m_freeList;
 	};

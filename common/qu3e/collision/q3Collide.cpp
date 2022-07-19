@@ -33,9 +33,9 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // qBoxtoBox
 //--------------------------------------------------------------------------------------------------
-	inline bool q3TrackFaceAxis(i32 *axis, i32 n, r32 s, r32 *sMax, const Vec3 &normal, Vec3 *axisNormal)
+	inline bool q3TrackFaceAxis(int *axis, int n, float s, float *sMax, const Vec3 &normal, Vec3 *axisNormal)
 	{
-		if (s > r32(0.0))
+		if (s > float(0.0))
 			return true;
 		
 		if (s > *sMax)
@@ -49,12 +49,12 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline bool q3TrackEdgeAxis(i32 *axis, i32 n, r32 s, r32 *sMax, const Vec3 &normal, Vec3 *axisNormal)
+	inline bool q3TrackEdgeAxis(int *axis, int n, float s, float *sMax, const Vec3 &normal, Vec3 *axisNormal)
 	{
-		if (s > r32(0.0))
+		if (s > float(0.0))
 			return true;
 		
-		r32 l = r32(1.0) / q3Length(normal);
+		float l = float(1.0) / q3Length(normal);
 		s *= l;
 		
 		if (s > *sMax)
@@ -80,7 +80,7 @@ namespace q3
 	};
 
 //--------------------------------------------------------------------------------------------------
-	void q3ComputeReferenceEdgesAndBasis(const Vec3 &eR, const q3Transform &rtx, Vec3 n, i32 axis, u8 *out,
+	void q3ComputeReferenceEdgesAndBasis(const Vec3 &eR, const q3Transform &rtx, Vec3 n, int axis, u8 *out,
 										 q3Mat3 *basis, Vec3 *e)
 	{
 		n = q3MulT(rtx.rotation, n);
@@ -91,7 +91,7 @@ namespace q3
 		switch (axis)
 		{
 			case 0:
-				if (n.x > r32(0.0))
+				if (n.x > float(0.0))
 				{
 					out[0] = 1;
 					out[1] = 8;
@@ -113,7 +113,7 @@ namespace q3
 				break;
 			
 			case 1:
-				if (n.y > r32(0.0))
+				if (n.y > float(0.0))
 				{
 					out[0] = 0;
 					out[1] = 1;
@@ -135,7 +135,7 @@ namespace q3
 				break;
 			
 			case 2:
-				if (n.z > r32(0.0))
+				if (n.z > float(0.0))
 				{
 					out[0] = 11;
 					out[1] = 4;
@@ -166,7 +166,7 @@ namespace q3
 		
 		if (absN.x > absN.y && absN.x > absN.z)
 		{
-			if (n.x > r32(0.0))
+			if (n.x > float(0.0))
 			{
 				out[0].v.Set(e.x, e.y, -e.z);
 				out[1].v.Set(e.x, e.y, e.z);
@@ -199,7 +199,7 @@ namespace q3
 			}
 		} else if (absN.y > absN.x && absN.y > absN.z)
 		{
-			if (n.y > r32(0.0))
+			if (n.y > float(0.0))
 			{
 				out[0].v.Set(-e.x, e.y, e.z);
 				out[1].v.Set(e.x, e.y, e.z);
@@ -232,7 +232,7 @@ namespace q3
 			}
 		} else
 		{
-			if (n.z > r32(0.0))
+			if (n.z > float(0.0))
 			{
 				out[0].v.Set(-e.x, e.y, e.z);
 				out[1].v.Set(-e.x, -e.y, e.z);
@@ -265,31 +265,31 @@ namespace q3
 			}
 		}
 		
-		for (i32 i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 			out[i].v = q3Mul(itx, out[i].v);
 	}
 
 //--------------------------------------------------------------------------------------------------
 #define InFront(a) \
-    ((a) < r32( 0.0 ))
+    ((a) < float( 0.0 ))
 
 #define Behind(a) \
-    ((a) >= r32( 0.0 ))
+    ((a) >= float( 0.0 ))
 
 #define On(a) \
-    ((a) < r32( 0.005 ) && (a) > -r32( 0.005 ))
+    ((a) < float( 0.005 ) && (a) > -float( 0.005 ))
 	
-	i32 q3Orthographic(r32 sign, r32 e, i32 axis, i32 clipEdge, q3ClipVertex *in, i32 inCount, q3ClipVertex *out)
+	int q3Orthographic(float sign, float e, int axis, int clipEdge, q3ClipVertex *in, int inCount, q3ClipVertex *out)
 	{
-		i32 outCount = 0;
+		int outCount = 0;
 		q3ClipVertex a = in[inCount - 1];
 		
-		for (i32 i = 0; i < inCount; ++i)
+		for (int i = 0; i < inCount; ++i)
 		{
 			q3ClipVertex b = in[i];
 			
-			r32 da = sign * a.v[axis] - e;
-			r32 db = sign * b.v[axis] - e;
+			float da = sign * a.v[axis] - e;
+			float db = sign * b.v[axis] - e;
 			
 			q3ClipVertex cv;
 			
@@ -334,41 +334,41 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // Resources (also see q3BoxtoBox's resources):
 // http://www.randygaul.net/2013/10/27/sutherland-hodgman-clipping/
-	i32 q3Clip(const Vec3 &rPos, const Vec3 &e, u8 *clipEdges, const q3Mat3 &basis, q3ClipVertex *incident,
-			   q3ClipVertex *outVerts, r32 *outDepths)
+	int q3Clip(const Vec3 &rPos, const Vec3 &e, u8 *clipEdges, const q3Mat3 &basis, q3ClipVertex *incident,
+			   q3ClipVertex *outVerts, float *outDepths)
 	{
-		i32 inCount = 4;
-		i32 outCount;
+		int inCount = 4;
+		int outCount;
 		q3ClipVertex in[8];
 		q3ClipVertex out[8];
 		
-		for (i32 i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 			in[i].v = q3MulT(basis, incident[i].v - rPos);
 		
-		outCount = q3Orthographic(r32(1.0), e.x, 0, clipEdges[0], in, inCount, out);
+		outCount = q3Orthographic(float(1.0), e.x, 0, clipEdges[0], in, inCount, out);
 		
 		if (!outCount)
 			return 0;
 		
-		inCount = q3Orthographic(r32(1.0), e.y, 1, clipEdges[1], out, outCount, in);
+		inCount = q3Orthographic(float(1.0), e.y, 1, clipEdges[1], out, outCount, in);
 		
 		if (!inCount)
 			return 0;
 		
-		outCount = q3Orthographic(r32(-1.0), e.x, 0, clipEdges[2], in, inCount, out);
+		outCount = q3Orthographic(float(-1.0), e.x, 0, clipEdges[2], in, inCount, out);
 		
 		if (!outCount)
 			return 0;
 		
-		inCount = q3Orthographic(r32(-1.0), e.y, 1, clipEdges[3], out, outCount, in);
+		inCount = q3Orthographic(float(-1.0), e.y, 1, clipEdges[3], out, outCount, in);
 		
 		// Keep incident vertices behind the reference face
 		outCount = 0;
-		for (i32 i = 0; i < inCount; ++i)
+		for (int i = 0; i < inCount; ++i)
 		{
-			r32 d = in[i].v.z - e.z;
+			float d = in[i].v.z - e.z;
 			
-			if (d <= r32(0.0))
+			if (d <= float(0.0))
 			{
 				outVerts[outCount].v = q3Mul(basis, in[i].v) + rPos;
 				outVerts[outCount].f = in[i].f;
@@ -388,16 +388,16 @@ namespace q3
 		Vec3 DA = QA - PA;
 		Vec3 DB = QB - PB;
 		Vec3 r = PA - PB;
-		r32 a = q3Dot(DA, DA);
-		r32 e = q3Dot(DB, DB);
-		r32 f = q3Dot(DB, r);
-		r32 c = q3Dot(DA, r);
+		float a = q3Dot(DA, DA);
+		float e = q3Dot(DB, DB);
+		float f = q3Dot(DB, r);
+		float c = q3Dot(DA, r);
 		
-		r32 b = q3Dot(DA, DB);
-		r32 denom = a * e - b * b;
+		float b = q3Dot(DA, DB);
+		float denom = a * e - b * b;
 		
-		r32 TA = (b * f - c * e) / denom;
-		r32 TB = (b * TA + f) / e;
+		float TA = (b * f - c * e) / denom;
+		float TB = (b * TA + f) / e;
 		
 		*CA = PA + DA * TA;
 		*CB = PB + DB * TB;
@@ -446,9 +446,9 @@ namespace q3
 			}
 		}
 		
-		r32 signx = q3Sign(n.x);
-		r32 signy = q3Sign(n.y);
-		r32 signz = q3Sign(n.z);
+		float signx = q3Sign(n.x);
+		float signy = q3Sign(n.y);
+		float signz = q3Sign(n.z);
 		
 		a.x *= signx;
 		a.y *= signy;
@@ -482,15 +482,15 @@ namespace q3
 		
 		q3Mat3 absC;
 		bool parallel = false;
-		const r32 kCosTol = r32(1.0e-6);
-		for (i32 i = 0; i < 3; ++i)
+		const float kCosTol = float(1.0e-6);
+		for (int i = 0; i < 3; ++i)
 		{
-			for (i32 j = 0; j < 3; ++j)
+			for (int j = 0; j < 3; ++j)
 			{
-				r32 val = q3Abs(C[i][j]);
+				float val = q3Abs(C[i][j]);
 				absC[i][j] = val;
 				
-				if (val + kCosTol >= r32(1.0))
+				if (val + kCosTol >= float(1.0))
 					parallel = true;
 			}
 		}
@@ -499,13 +499,13 @@ namespace q3
 		Vec3 t = q3MulT(atx.rotation, btx.position - atx.position);
 		
 		// Query states
-		r32 s;
-		r32 aMax = -Q3_R32_MAX;
-		r32 bMax = -Q3_R32_MAX;
-		r32 eMax = -Q3_R32_MAX;
-		i32 aAxis = ~0;
-		i32 bAxis = ~0;
-		i32 eAxis = ~0;
+		float s;
+		float aMax = -Q3_float_MAX;
+		float bMax = -Q3_float_MAX;
+		float eMax = -Q3_float_MAX;
+		int aAxis = ~0;
+		int bAxis = ~0;
+		int eAxis = ~0;
 		Vec3 nA;
 		Vec3 nB;
 		Vec3 nE;
@@ -545,80 +545,80 @@ namespace q3
 		if (!parallel)
 		{
 			// Edge axis checks
-			r32 rA;
-			r32 rB;
+			float rA;
+			float rB;
 			
 			// Cross( a.x, b.x )
 			rA = eA.y * absC[0][2] + eA.z * absC[0][1];
 			rB = eB.y * absC[2][0] + eB.z * absC[1][0];
 			s = q3Abs(t.z * C[0][1] - t.y * C[0][2]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 6, s, &eMax, Vec3(r32(0.0), -C[0][2], C[0][1]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 6, s, &eMax, Vec3(float(0.0), -C[0][2], C[0][1]), &nE))
 				return;
 			
 			// Cross( a.x, b.y )
 			rA = eA.y * absC[1][2] + eA.z * absC[1][1];
 			rB = eB.x * absC[2][0] + eB.z * absC[0][0];
 			s = q3Abs(t.z * C[1][1] - t.y * C[1][2]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 7, s, &eMax, Vec3(r32(0.0), -C[1][2], C[1][1]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 7, s, &eMax, Vec3(float(0.0), -C[1][2], C[1][1]), &nE))
 				return;
 			
 			// Cross( a.x, b.z )
 			rA = eA.y * absC[2][2] + eA.z * absC[2][1];
 			rB = eB.x * absC[1][0] + eB.y * absC[0][0];
 			s = q3Abs(t.z * C[2][1] - t.y * C[2][2]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 8, s, &eMax, Vec3(r32(0.0), -C[2][2], C[2][1]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 8, s, &eMax, Vec3(float(0.0), -C[2][2], C[2][1]), &nE))
 				return;
 			
 			// Cross( a.y, b.x )
 			rA = eA.x * absC[0][2] + eA.z * absC[0][0];
 			rB = eB.y * absC[2][1] + eB.z * absC[1][1];
 			s = q3Abs(t.x * C[0][2] - t.z * C[0][0]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 9, s, &eMax, Vec3(C[0][2], r32(0.0), -C[0][0]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 9, s, &eMax, Vec3(C[0][2], float(0.0), -C[0][0]), &nE))
 				return;
 			
 			// Cross( a.y, b.y )
 			rA = eA.x * absC[1][2] + eA.z * absC[1][0];
 			rB = eB.x * absC[2][1] + eB.z * absC[0][1];
 			s = q3Abs(t.x * C[1][2] - t.z * C[1][0]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 10, s, &eMax, Vec3(C[1][2], r32(0.0), -C[1][0]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 10, s, &eMax, Vec3(C[1][2], float(0.0), -C[1][0]), &nE))
 				return;
 			
 			// Cross( a.y, b.z )
 			rA = eA.x * absC[2][2] + eA.z * absC[2][0];
 			rB = eB.x * absC[1][1] + eB.y * absC[0][1];
 			s = q3Abs(t.x * C[2][2] - t.z * C[2][0]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 11, s, &eMax, Vec3(C[2][2], r32(0.0), -C[2][0]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 11, s, &eMax, Vec3(C[2][2], float(0.0), -C[2][0]), &nE))
 				return;
 			
 			// Cross( a.z, b.x )
 			rA = eA.x * absC[0][1] + eA.y * absC[0][0];
 			rB = eB.y * absC[2][2] + eB.z * absC[1][2];
 			s = q3Abs(t.y * C[0][0] - t.x * C[0][1]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 12, s, &eMax, Vec3(-C[0][1], C[0][0], r32(0.0)), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 12, s, &eMax, Vec3(-C[0][1], C[0][0], float(0.0)), &nE))
 				return;
 			
 			// Cross( a.z, b.y )
 			rA = eA.x * absC[1][1] + eA.y * absC[1][0];
 			rB = eB.x * absC[2][2] + eB.z * absC[0][2];
 			s = q3Abs(t.y * C[1][0] - t.x * C[1][1]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 13, s, &eMax, Vec3(-C[1][1], C[1][0], r32(0.0)), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 13, s, &eMax, Vec3(-C[1][1], C[1][0], float(0.0)), &nE))
 				return;
 			
 			// Cross( a.z, b.z )
 			rA = eA.x * absC[2][1] + eA.y * absC[2][0];
 			rB = eB.x * absC[1][2] + eB.y * absC[0][2];
 			s = q3Abs(t.y * C[2][0] - t.x * C[2][1]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 14, s, &eMax, Vec3(-C[2][1], C[2][0], r32(0.0)), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 14, s, &eMax, Vec3(-C[2][1], C[2][0], float(0.0)), &nE))
 				return;
 		}
 		
 		// Artificial axis bias to improve frame coherence
-		const r32 kRelTol = r32(0.95);
-		const r32 kAbsTol = r32(0.01);
-		i32 axis;
-		r32 sMax;
+		const float kRelTol = float(0.95);
+		const float kAbsTol = float(0.01);
+		int axis;
+		float sMax;
 		Vec3 n;
-		r32 faceMax = q3Max(aMax, bMax);
+		float faceMax = q3Max(aMax, bMax);
 		if (kRelTol * eMax > faceMax + kAbsTol)
 		{
 			axis = eAxis;
@@ -639,7 +639,7 @@ namespace q3
 			}
 		}
 		
-		if (q3Dot(n, btx.position - atx.position) < r32(0.0))
+		if (q3Dot(n, btx.position - atx.position) < float(0.0))
 			n = -n;
 		
 		if (axis == ~0)
@@ -680,8 +680,8 @@ namespace q3
 			
 			// Clip the incident face against the reference face side planes
 			q3ClipVertex out[8];
-			r32 depths[8];
-			i32 outNum;
+			float depths[8];
+			int outNum;
 			outNum = q3Clip(rtx.position, e, clipEdges, basis, incident, out, depths);
 			
 			if (outNum)
@@ -689,7 +689,7 @@ namespace q3
 				m->contactCount = outNum;
 				m->normal = flip ? -n : n;
 				
-				for (i32 i = 0; i < outNum; ++i)
+				for (int i = 0; i < outNum; ++i)
 				{
 					q3Contact *c = m->contacts + i;
 					
@@ -710,7 +710,7 @@ namespace q3
 		{
 			n = atx.rotation * n;
 			
-			if (q3Dot(n, btx.position - atx.position) < r32(0.0))
+			if (q3Dot(n, btx.position - atx.position) < float(0.0))
 				n = -n;
 			
 			Vec3 PA, QA;
@@ -729,7 +729,7 @@ namespace q3
 			pair.key = axis;
 			c->fp = pair;
 			c->penetration = sMax;
-			c->position = (CA + CB) * r32(0.5);
+			c->position = (CA + CB) * float(0.5);
 		}
 	}
 }

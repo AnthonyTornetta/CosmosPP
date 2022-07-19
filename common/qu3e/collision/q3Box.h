@@ -41,7 +41,7 @@ namespace q3
 	{
 		q3Mat3 inertia;
 		Vec3 center;
-		r32 mass;
+		float mass;
 	};
 
 //--------------------------------------------------------------------------------------------------
@@ -56,10 +56,10 @@ namespace q3
 		
 		class q3Body *body;
 		
-		r32 friction;
-		r32 restitution;
-		r32 density;
-		i32 broadPhaseIndex;
+		float friction;
+		float restitution;
+		float density;
+		int broadPhaseIndex;
 		mutable void *userData;
 		mutable bool sensor;
 		
@@ -89,19 +89,19 @@ namespace q3
 		q3BoxDef()
 		{
 			// Common default values
-			m_friction = r32(0.4);
-			m_restitution = r32(0.2);
-			m_density = r32(1.0);
+			m_friction = float(0.4);
+			m_restitution = float(0.2);
+			m_density = float(1.0);
 			m_sensor = false;
 		}
 		
 		void Set(const q3Transform &tx, const Vec3 &extents);
 		
-		void SetFriction(r32 friction);
+		void SetFriction(float friction);
 		
-		void SetRestitution(r32 restitution);
+		void SetRestitution(float restitution);
 		
-		void SetDensity(r32 density);
+		void SetDensity(float density);
 		
 		void SetSensor(bool sensor);
 	
@@ -109,9 +109,9 @@ namespace q3
 		q3Transform m_tx;
 		Vec3 m_e;
 		
-		r32 m_friction;
-		r32 m_restitution;
-		r32 m_density;
+		float m_friction;
+		float m_restitution;
+		float m_density;
 		bool m_sensor;
 		
 		friend class q3Body;

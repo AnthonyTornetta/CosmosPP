@@ -90,9 +90,9 @@ namespace q3
 		
 		bool IsAwake() const;
 		
-		r32 GetGravityScale() const;
+		float GetGravityScale() const;
 		
-		void SetGravityScale(r32 scale);
+		void SetGravityScale(float scale);
 		
 		const Vec3 GetLocalPoint(const Vec3 &p) const;
 		
@@ -116,23 +116,23 @@ namespace q3
 		
 		q3Transform GetTransform() const;
 		
-		i32 GetFlags() const;
+		int GetFlags() const;
 		
-		void SetLayers(i32 layers);
+		void SetLayers(int layers);
 		
-		i32 GetLayers() const;
+		int GetLayers() const;
 		
 		const q3Quaternion GetQuaternion() const;
 		
 		void *GetUserData() const;
 		
-		void SetLinearDamping(r32 damping);
+		void SetLinearDamping(float damping);
 		
-		r32 GetLinearDamping(r32 damping) const;
+		float GetLinearDamping(float damping) const;
 		
-		void SetAngularDamping(r32 damping);
+		void SetAngularDamping(float damping);
 		
-		r32 GetAngularDamping(r32 damping) const;
+		float GetAngularDamping(float damping) const;
 		
 		// Manipulating the transformation of a body manually will result in
 		// non-physical behavior. Contacts are updated upon the next call to
@@ -140,18 +140,18 @@ namespace q3
 		// can be updated.
 		void SetTransform(const Vec3 &position);
 		
-		void SetTransform(const Vec3 &position, const Vec3 &axis, r32 angle);
+		void SetTransform(const Vec3 &position, const Vec3 &axis, float angle);
 		
 		// Used for debug rendering lines, triangles and basic lighting
 		void Render(q3Render *render) const;
 		
 		// Dump this rigid body and its shapes into a log file. The log can be
 		// used as C++ code to re-create an initial scene setup.
-		void Dump(FILE *file, i32 index) const;
+		void Dump(FILE *file, int index) const;
 		
-		r32 GetMass() const;
+		float GetMass() const;
 		
-		r32 GetInvMass() const;
+		float GetInvMass() const;
 	
 	private:
 		// m_flags
@@ -171,8 +171,8 @@ namespace q3
 		
 		q3Mat3 m_invInertiaModel;
 		q3Mat3 m_invInertiaWorld;
-		r32 m_mass;
-		r32 m_invMass;
+		float m_mass;
+		float m_invMass;
 		Vec3 m_linearVelocity;
 		Vec3 m_angularVelocity;
 		Vec3 m_force;
@@ -181,20 +181,20 @@ namespace q3
 		q3Quaternion m_q;
 		Vec3 m_localCenter;
 		Vec3 m_worldCenter;
-		r32 m_sleepTime;
-		r32 m_gravityScale;
-		i32 m_layers;
-		i32 m_flags;
+		float m_sleepTime;
+		float m_gravityScale;
+		int m_layers;
+		int m_flags;
 		
 		q3Box *m_boxes;
 		void *m_userData;
 		q3Scene *m_scene;
 		q3Body *m_next;
 		q3Body *m_prev;
-		i32 m_islandIndex;
+		int m_islandIndex;
 		
-		r32 m_linearDamping;
-		r32 m_angularDamping;
+		float m_linearDamping;
+		float m_angularDamping;
 		
 		q3ContactEdge *m_contactList;
 		
@@ -223,13 +223,13 @@ namespace q3
 		{
 			// Set all initial positions/velocties to zero
 			q3Identity(axis);
-			angle = r32(0.0);
+			angle = float(0.0);
 			q3Identity(position);
 			q3Identity(linearVelocity);
 			q3Identity(angularVelocity);
 			
 			// Usually a gravity scale of 1 is the best
-			gravityScale = r32(1.0);
+			gravityScale = float(1.0);
 			
 			// Common default values
 			bodyType = eStaticBody;
@@ -242,21 +242,21 @@ namespace q3
 			lockAxisY = false;
 			lockAxisZ = false;
 			
-			linearDamping = r32(0.0);
-			angularDamping = r32(0.1);
+			linearDamping = float(0.0);
+			angularDamping = float(0.1);
 		}
 		
 		Vec3 axis;            // Initial world transformation.
-		r32 angle;                // Initial world transformation. Radians.
+		float angle;                // Initial world transformation. Radians.
 		Vec3 position;        // Initial world transformation.
 		Vec3 linearVelocity;    // Initial linear velocity in world space.
 		Vec3 angularVelocity;    // Initial angular velocity in world space.
-		r32 gravityScale;        // Convenient scale values for gravity x, y and z directions.
-		i32 layers;                // Bitmask of collision layers. Bodies matching at least one layer can collide.
+		float gravityScale;        // Convenient scale values for gravity x, y and z directions.
+		int layers;                // Bitmask of collision layers. Bodies matching at least one layer can collide.
 		void *userData;            // Use to store application specific data.
 		
-		r32 linearDamping;
-		r32 angularDamping;
+		float linearDamping;
+		float angularDamping;
 		
 		// Static, dynamic or kinematic. Dynamic bodies with zero mass are defaulted
 		// to a mass of 1. Static bodies never move or integrate, and are very CPU
