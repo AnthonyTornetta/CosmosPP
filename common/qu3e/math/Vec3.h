@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------------------
 /**
-@file	q3Vec3.h
+@file	Vec3.h
 
 @author	Randy Gaul
 @date	10/10/2014
@@ -24,8 +24,8 @@
 */
 //--------------------------------------------------------------------------------------------------
 
-#ifndef Q3VEC3_H
-#define Q3VEC3_H
+#ifndef Vec3_H
+#define Vec3_H
 
 #include "../common/q3Types.h"
 
@@ -38,9 +38,9 @@ namespace q3
 	r32 q3Max(r32 a, r32 b);
 
 //--------------------------------------------------------------------------------------------------
-// q3Vec3
+// Vec3
 //--------------------------------------------------------------------------------------------------
-	struct q3Vec3
+	struct Vec3
 	{
 		union
 		{
@@ -54,38 +54,38 @@ namespace q3
 			};
 		};
 		
-		q3Vec3();
+		Vec3();
 		
-		q3Vec3(r32 _x, r32 _y, r32 _z);
+		Vec3(r32 _x, r32 _y, r32 _z);
 		
 		void Set(r32 _x, r32 _y, r32 _z);
 		
 		void SetAll(r32 a);
 		
-		q3Vec3 &operator+=(const q3Vec3 &rhs);
+		Vec3 &operator+=(const Vec3 &rhs);
 		
-		q3Vec3 &operator-=(const q3Vec3 &rhs);
+		Vec3 &operator-=(const Vec3 &rhs);
 		
-		q3Vec3 &operator*=(r32 f);
+		Vec3 &operator*=(r32 f);
 		
-		q3Vec3 &operator/=(r32 f);
+		Vec3 &operator/=(r32 f);
 		
 		r32 &operator[](u32 i);
 		
 		r32 operator[](u32 i) const;
 		
-		q3Vec3 operator-(void) const;
+		Vec3 operator-(void) const;
 		
-		const q3Vec3 operator+(const q3Vec3 &rhs) const;
+		const Vec3 operator+(const Vec3 &rhs) const;
 		
-		const q3Vec3 operator-(const q3Vec3 &rhs) const;
+		const Vec3 operator-(const Vec3 &rhs) const;
 		
-		const q3Vec3 operator*(r32 f) const;
+		const Vec3 operator*(r32 f) const;
 		
-		const q3Vec3 operator/(r32 f) const;
+		const Vec3 operator/(r32 f) const;
 	};
 }
 
-#include "q3Vec3.inl"
+#include "Vec3.inl"
 
-#endif // Q3VEC3_H
+#endif // Vec3_H

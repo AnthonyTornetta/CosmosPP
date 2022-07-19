@@ -36,39 +36,39 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	q3HalfSpace::q3HalfSpace(const q3Vec3 &n, r32 d)
+	q3HalfSpace::q3HalfSpace(const Vec3 &n, r32 d)
 			: normal(n), distance(d)
 	{
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3HalfSpace::Set(const q3Vec3 &a, const q3Vec3 &b, const q3Vec3 &c)
+	void q3HalfSpace::Set(const Vec3 &a, const Vec3 &b, const Vec3 &c)
 	{
 		normal = q3Normalize(q3Cross(b - a, c - a));
 		distance = q3Dot(normal, a);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3HalfSpace::Set(const q3Vec3 &n, const q3Vec3 &p)
+	void q3HalfSpace::Set(const Vec3 &n, const Vec3 &p)
 	{
 		normal = q3Normalize(n);
 		distance = q3Dot(normal, p);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3HalfSpace::Origin() const
+	const Vec3 q3HalfSpace::Origin() const
 	{
 		return normal * distance;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	r32 q3HalfSpace::Distance(const q3Vec3 &p) const
+	r32 q3HalfSpace::Distance(const Vec3 &p) const
 	{
 		return q3Dot(normal, p) - distance;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3HalfSpace::Projected(const q3Vec3 &p) const
+	const Vec3 q3HalfSpace::Projected(const Vec3 &p) const
 	{
 		return p - normal * Distance(p);
 	}

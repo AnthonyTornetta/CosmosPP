@@ -9,8 +9,8 @@
 
 #include "IHasBlockChangeCallback.h"
 
-#include "../observer/Observable.h"
 #include <map>
+#include "../utils/Ownership.h"
 
 namespace Cosmos
 {
@@ -30,7 +30,7 @@ namespace Cosmos
 		
 		bool m_dirty;
 		
-		std::vector<IHasBlockChangeCallback*> m_BlockCallbacks;
+		std::vector<Ownership<IHasBlockChangeCallback>> m_blockCallbacks;
 		
 		const int m_id;
 		
@@ -105,6 +105,6 @@ namespace Cosmos
 		
 		[[nodiscard]] const Chunk& chunkAt(int cx, int cy, int cz);
 		
-		void addBlockChangeObserver(IHasBlockChangeCallback* callback);
+		void addBlockChangeObserver(const Ownership<IHasBlockChangeCallback> &callback);
 	};
 }

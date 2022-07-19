@@ -93,8 +93,8 @@ namespace q3
 		
 		*stack = m_root;
 		
-		q3Vec3 p0 = rayCast.start;
-		q3Vec3 p1 = p0 + rayCast.dir * rayCast.t;
+		Vec3 p0 = rayCast.start;
+		Vec3 p1 = p0 + rayCast.dir * rayCast.t;
 		
 		while (sp)
 		{
@@ -108,9 +108,9 @@ namespace q3
 			
 			const Node *n = m_nodes + id;
 			
-			q3Vec3 e = n->aabb.max - n->aabb.min;
-			q3Vec3 d = p1 - p0;
-			q3Vec3 m = p0 + p1 - n->aabb.min - n->aabb.max;
+			Vec3 e = n->aabb.max - n->aabb.min;
+			Vec3 d = p1 - p0;
+			Vec3 m = p0 + p1 - n->aabb.min - n->aabb.max;
 			
 			r32 adx = q3Abs(d.x);
 			

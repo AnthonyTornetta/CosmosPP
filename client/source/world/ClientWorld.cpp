@@ -4,6 +4,7 @@
 #include "source/block/Block.h"
 #include "source/structure/Structure.h"
 #include "ClientWorld.h"
+#include "source/utils/Ownership.h"
 
 namespace Cosmos
 {
@@ -22,7 +23,7 @@ namespace Cosmos
 	{
 		printf("BLOCK CHANGED!\n");
 		
-		auto &renderData = m_renderData.at(s.id());
+		auto &renderData = m_renderData.at(0); // TODO: 0 is meant to be the structure's ID
 		
 		if(renderData.markBlockDirty(x, y, z, oldBlock))
 		{
@@ -34,9 +35,9 @@ namespace Cosmos
 	{
 		CosmosWorld::addStructure(s);
 		
-		m_renderData.insert({s->id(), Cosmos::Rendering::StructureRenderData(*s, *m_sceneManager)});
+		m_renderData.insert({0, Cosmos::Rendering::StructureRenderData(*s, *m_sceneManager)});
 		
-		s->addBlockChangeListener(this);
+		s->addBlockChangeObserver(Ownership<IHasBlockChangeCallback>(this, false));
 	}
 	
 	void ClientWorld::updateRenderData()

@@ -185,7 +185,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::ApplyLinearForce(const q3Vec3 &force)
+	void q3Body::ApplyLinearForce(const Vec3 &force)
 	{
 		m_force += force * m_mass;
 		
@@ -193,7 +193,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::ApplyForceAtWorldPoint(const q3Vec3 &force, const q3Vec3 &point)
+	void q3Body::ApplyForceAtWorldPoint(const Vec3 &force, const Vec3 &point)
 	{
 		m_force += force * m_mass;
 		m_torque += q3Cross(point - m_worldCenter, force);
@@ -202,7 +202,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::ApplyLinearImpulse(const q3Vec3 &impulse)
+	void q3Body::ApplyLinearImpulse(const Vec3 &impulse)
 	{
 		m_linearVelocity += impulse * m_invMass;
 		
@@ -210,7 +210,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::ApplyLinearImpulseAtWorldPoint(const q3Vec3 &impulse, const q3Vec3 &point)
+	void q3Body::ApplyLinearImpulseAtWorldPoint(const Vec3 &impulse, const Vec3 &point)
 	{
 		m_linearVelocity += impulse * m_invMass;
 		m_angularVelocity += m_invInertiaWorld * q3Cross(point - m_worldCenter, impulse);
@@ -219,7 +219,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::ApplyTorque(const q3Vec3 &torque)
+	void q3Body::ApplyTorque(const Vec3 &torque)
 	{
 		m_torque += torque;
 	}
@@ -276,46 +276,46 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Body::GetLocalPoint(const q3Vec3 &p) const
+	const Vec3 q3Body::GetLocalPoint(const Vec3 &p) const
 	{
 		return q3MulT(m_tx, p);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Body::GetLocalVector(const q3Vec3 &v) const
+	const Vec3 q3Body::GetLocalVector(const Vec3 &v) const
 	{
 		return q3MulT(m_tx.rotation, v);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Body::GetWorldPoint(const q3Vec3 &p) const
+	const Vec3 q3Body::GetWorldPoint(const Vec3 &p) const
 	{
 		return q3Mul(m_tx, p);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Body::GetWorldVector(const q3Vec3 &v) const
+	const Vec3 q3Body::GetWorldVector(const Vec3 &v) const
 	{
 		return q3Mul(m_tx.rotation, v);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Body::GetLinearVelocity() const
+	const Vec3 q3Body::GetLinearVelocity() const
 	{
 		return m_linearVelocity;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Body::GetVelocityAtWorldPoint(const q3Vec3 &p) const
+	const Vec3 q3Body::GetVelocityAtWorldPoint(const Vec3 &p) const
 	{
-		q3Vec3 directionToPoint = p - m_worldCenter;
-		q3Vec3 relativeAngularVel = q3Cross(m_angularVelocity, directionToPoint);
+		Vec3 directionToPoint = p - m_worldCenter;
+		Vec3 relativeAngularVel = q3Cross(m_angularVelocity, directionToPoint);
 		
 		return m_linearVelocity + relativeAngularVel;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetLinearVelocity(const q3Vec3 &v)
+	void q3Body::SetLinearVelocity(const Vec3 &v)
 	{
 		// Velocity of static bodies cannot be adjusted
 		if (m_flags & eStatic)
@@ -330,13 +330,13 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Body::GetAngularVelocity() const
+	const Vec3 q3Body::GetAngularVelocity() const
 	{
 		return m_angularVelocity;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetAngularVelocity(const q3Vec3 v)
+	void q3Body::SetAngularVelocity(const Vec3 v)
 	{
 		// Velocity of static bodies cannot be adjusted
 		if (m_flags & eStatic)
@@ -373,7 +373,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetTransform(const q3Vec3 &position)
+	void q3Body::SetTransform(const Vec3 &position)
 	{
 		m_worldCenter = position;
 		
@@ -381,7 +381,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Body::SetTransform(const q3Vec3 &position, const q3Vec3 &axis, r32 angle)
+	void q3Body::SetTransform(const Vec3 &position, const Vec3 &axis, r32 angle)
 	{
 		m_worldCenter = position;
 		m_q.Set(axis, angle);
@@ -480,7 +480,7 @@ namespace q3
 		
 		fprintf(file, "\tbd.position.Set( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", m_tx.position.x,
 				m_tx.position.y, m_tx.position.z);
-		q3Vec3 axis;
+		Vec3 axis;
 		r32 angle;
 		m_q.ToAxisAngle(&axis, &angle);
 		fprintf(file, "\tbd.axis.Set( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", axis.x, axis.y, axis.z);
@@ -512,19 +512,19 @@ namespace q3
 			fprintf(file, "\t\tsd.SetSensor( bool( %d ) );\n", sensor);
 			fprintf(file, "\t\tq3Transform boxTx;\n");
 			q3Transform boxTx = box->local;
-			q3Vec3 xAxis = boxTx.rotation.ex;
-			q3Vec3 yAxis = boxTx.rotation.ey;
-			q3Vec3 zAxis = boxTx.rotation.ez;
-			fprintf(file, "\t\tq3Vec3 xAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", xAxis.x, xAxis.y,
+			Vec3 xAxis = boxTx.rotation.ex;
+			Vec3 yAxis = boxTx.rotation.ey;
+			Vec3 zAxis = boxTx.rotation.ez;
+			fprintf(file, "\t\tVec3 xAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", xAxis.x, xAxis.y,
 					xAxis.z);
-			fprintf(file, "\t\tq3Vec3 yAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", yAxis.x, yAxis.y,
+			fprintf(file, "\t\tVec3 yAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", yAxis.x, yAxis.y,
 					yAxis.z);
-			fprintf(file, "\t\tq3Vec3 zAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", zAxis.x, zAxis.y,
+			fprintf(file, "\t\tVec3 zAxis( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", zAxis.x, zAxis.y,
 					zAxis.z);
 			fprintf(file, "\t\tboxTx.rotation.SetRows( xAxis, yAxis, zAxis );\n");
 			fprintf(file, "\t\tboxTx.position.Set( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) );\n", boxTx.position.x,
 					boxTx.position.y, boxTx.position.z);
-			fprintf(file, "\t\tsd.Set( boxTx, q3Vec3( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) ) );\n",
+			fprintf(file, "\t\tsd.Set( boxTx, Vec3( r32( %.15lf ), r32( %.15lf ), r32( %.15lf ) ) );\n",
 					box->e.x * 2.0f, box->e.y * 2.0f, box->e.z * 2.0f);
 			fprintf(file, "\t\tbodies[ %d ]->AddBox( sd );\n", index);
 			fprintf(file, "\t}\n");
@@ -551,7 +551,7 @@ namespace q3
 			return;
 		}
 		
-		q3Vec3 lc;
+		Vec3 lc;
 		q3Identity(lc);
 		
 		for (q3Box *box = m_boxes; box; box = box->next)

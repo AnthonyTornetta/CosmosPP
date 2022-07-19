@@ -36,7 +36,7 @@ namespace q3
 	inline void FattenAABB(q3AABB &aabb)
 	{
 		const r32 k_fattener = r32(0.5);
-		q3Vec3 v(k_fattener, k_fattener, k_fattener);
+		Vec3 v(k_fattener, k_fattener, k_fattener);
 		
 		aabb.min -= v;
 		aabb.max += v;

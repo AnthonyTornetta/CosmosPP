@@ -2,6 +2,8 @@
 // Created by cornchip on 7/17/22.
 //
 
+#pragma once
+
 namespace Cosmos
 {
 	template<class T, bool isArray = false>
@@ -12,7 +14,7 @@ namespace Cosmos
 		bool m_owner;
 		
 	public:
-		Ownership(T data, bool owner)
+		Ownership(T* data, bool owner)
 				: m_data(data), m_owner(owner)
 		{
 		

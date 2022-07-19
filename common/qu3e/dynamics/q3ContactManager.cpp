@@ -231,8 +231,8 @@ namespace q3
 			}
 			q3Manifold *manifold = &constraint->manifold;
 			q3Manifold oldManifold = constraint->manifold;
-			q3Vec3 ot0 = oldManifold.tangentVectors[0];
-			q3Vec3 ot1 = oldManifold.tangentVectors[1];
+			Vec3 ot0 = oldManifold.tangentVectors[0];
+			Vec3 ot1 = oldManifold.tangentVectors[1];
 			constraint->SolveCollision();
 			q3ComputeBasis(manifold->normal, manifold->tangentVectors, manifold->tangentVectors + 1);
 			
@@ -251,7 +251,7 @@ namespace q3
 						c->normalImpulse = oc->normalImpulse;
 						
 						// Attempt to re-project old friction solutions
-						q3Vec3 friction = ot0 * oc->tangentImpulse[0] + ot1 * oc->tangentImpulse[1];
+						Vec3 friction = ot0 * oc->tangentImpulse[0] + ot1 * oc->tangentImpulse[1];
 						c->tangentImpulse[0] = q3Dot(friction, manifold->tangentVectors[0]);
 						c->tangentImpulse[1] = q3Dot(friction, manifold->tangentVectors[1]);
 						c->warmStarted = q3Max(oldWarmStart, u8(oldWarmStart + 1));

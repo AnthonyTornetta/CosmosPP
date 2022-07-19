@@ -39,7 +39,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // q3Scene
 //--------------------------------------------------------------------------------------------------
-	q3Scene::q3Scene(r32 dt, const q3Vec3 &gravity, i32 iterations)
+	q3Scene::q3Scene(r32 dt, const Vec3 &gravity, i32 iterations)
 			: m_contactManager(&m_stack), m_boxAllocator(sizeof(q3Box), 256), m_bodyCount(0), m_bodyList(NULL),
 			  m_gravity(gravity), m_dt(dt), m_iterations(iterations), m_newBox(false), m_allowSleep(true),
 			  m_enableFriction(true)
@@ -314,13 +314,13 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Scene::GetGravity() const
+	const Vec3 q3Scene::GetGravity() const
 	{
 		return m_gravity;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Scene::SetGravity(const q3Vec3 &gravity)
+	void q3Scene::SetGravity(const Vec3 &gravity)
 	{
 		m_gravity = gravity;
 	}
@@ -372,7 +372,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Scene::QueryPoint(q3QueryCallback *cb, const q3Vec3 &point) const
+	void q3Scene::QueryPoint(q3QueryCallback *cb, const Vec3 &point) const
 	{
 		struct SceneQueryWrapper
 		{
@@ -390,7 +390,7 @@ namespace q3
 			
 			q3QueryCallback *cb;
 			const q3BroadPhase *broadPhase;
-			q3Vec3 m_point;
+			Vec3 m_point;
 		};
 		
 		SceneQueryWrapper wrapper;
@@ -398,7 +398,7 @@ namespace q3
 		wrapper.broadPhase = &m_contactManager.m_broadphase;
 		wrapper.cb = cb;
 		const r32 k_fattener = r32(0.5);
-		q3Vec3 v(k_fattener, k_fattener, k_fattener);
+		Vec3 v(k_fattener, k_fattener, k_fattener);
 		q3AABB aabb;
 		aabb.min = point - v;
 		aabb.max = point + v;
@@ -439,7 +439,7 @@ namespace q3
 	{
 		fprintf(file, "// Ensure 64/32-bit memory compatability with the dump contents\n");
 		fprintf(file, "assert( sizeof( int* ) == %lu );\n", sizeof(int *));
-		fprintf(file, "scene.SetGravity( q3Vec3( %.15lf, %.15lf, %.15lf ) );\n", m_gravity.x, m_gravity.y, m_gravity.z);
+		fprintf(file, "scene.SetGravity( Vec3( %.15lf, %.15lf, %.15lf ) );\n", m_gravity.x, m_gravity.y, m_gravity.z);
 		fprintf(file, "scene.SetAllowSleep( %s );\n", m_allowSleep ? "true" : "false");
 		fprintf(file, "scene.SetEnableFriction( %s );\n", m_enableFriction ? "true" : "false");
 		

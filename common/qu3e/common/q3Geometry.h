@@ -36,12 +36,12 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	struct q3AABB
 	{
-		q3Vec3 min;
-		q3Vec3 max;
+		Vec3 min;
+		Vec3 max;
 		
 		bool Contains(const q3AABB &other) const;
 		
-		bool Contains(const q3Vec3 &point) const;
+		bool Contains(const Vec3 &point) const;
 		
 		r32 SurfaceArea() const;
 	};
@@ -55,19 +55,19 @@ namespace q3
 	{
 		q3HalfSpace();
 		
-		q3HalfSpace(const q3Vec3 &normal, r32 distance);
+		q3HalfSpace(const Vec3 &normal, r32 distance);
 		
-		void Set(const q3Vec3 &a, const q3Vec3 &b, const q3Vec3 &c);
+		void Set(const Vec3 &a, const Vec3 &b, const Vec3 &c);
 		
-		void Set(const q3Vec3 &n, const q3Vec3 &p);
+		void Set(const Vec3 &n, const Vec3 &p);
 		
-		const q3Vec3 Origin() const;
+		const Vec3 Origin() const;
 		
-		r32 Distance(const q3Vec3 &p) const;
+		r32 Distance(const Vec3 &p) const;
 		
-		const q3Vec3 Projected(const q3Vec3 &p) const;
+		const Vec3 Projected(const Vec3 &p) const;
 		
-		q3Vec3 normal;
+		Vec3 normal;
 		r32 distance;
 	};
 
@@ -76,19 +76,19 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	struct q3RaycastData
 	{
-		q3Vec3 start;    // Beginning point of the ray
-		q3Vec3 dir;        // Direction of the ray (normalized)
+		Vec3 start;    // Beginning point of the ray
+		Vec3 dir;        // Direction of the ray (normalized)
 		r32 t;            // Time specifying ray endpoint
 		
 		r32 toi;        // Solved time of impact
-		q3Vec3 normal;    // Surface normal at impact
+		Vec3 normal;    // Surface normal at impact
 		
-		void Set(const q3Vec3 &startPoint, const q3Vec3 &direction, r32 endPointTime);
+		void Set(const Vec3 &startPoint, const Vec3 &direction, r32 endPointTime);
 		
 		// Uses toi, start and dir to compute the point at toi. Should
 		// only be called after a raycast has been conducted with a
 		// return value of true.
-		const q3Vec3 GetImpactPoint() const;
+		const Vec3 GetImpactPoint() const;
 	};
 }
 #include "q3Geometry.inl"

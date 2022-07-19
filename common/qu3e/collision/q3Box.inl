@@ -38,7 +38,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // q3BoxDef
 //--------------------------------------------------------------------------------------------------
-	inline void q3BoxDef::Set(const q3Transform &tx, const q3Vec3 &extents)
+	inline void q3BoxDef::Set(const q3Transform &tx, const Vec3 &extents)
 	{
 		m_tx = tx;
 		m_e = extents * r32(0.5);

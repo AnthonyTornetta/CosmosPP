@@ -124,7 +124,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Lerp(const q3Vec3 &a, const q3Vec3 &b, r32 t)
+	inline const Vec3 q3Lerp(const Vec3 &a, const Vec3 &b, r32 t)
 	{
 		return a * (r32(1.0) - t) + b * t;
 	}

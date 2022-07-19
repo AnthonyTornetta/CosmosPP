@@ -24,25 +24,25 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // q3Transform
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Mul(const q3Transform &tx, const q3Vec3 &v)
+	inline const Vec3 q3Mul(const q3Transform &tx, const Vec3 &v)
 	{
-		return q3Vec3(tx.rotation * v + tx.position);
+		return Vec3(tx.rotation * v + tx.position);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Mul(const q3Transform &tx, const q3Vec3 &scale, const q3Vec3 &v)
+	inline const Vec3 q3Mul(const q3Transform &tx, const Vec3 &scale, const Vec3 &v)
 	{
-		return q3Vec3(tx.rotation * q3Mul(scale, v) + tx.position);
+		return Vec3(tx.rotation * q3Mul(scale, v) + tx.position);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Mul(const q3Transform *tx, const q3Vec3 &v)
+	inline const Vec3 q3Mul(const q3Transform *tx, const Vec3 &v)
 	{
-		return q3Vec3(tx->rotation * v + tx->position);
+		return Vec3(tx->rotation * v + tx->position);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Mul(const q3Mat3 &r, const q3Vec3 &v)
+	inline const Vec3 q3Mul(const q3Mat3 &r, const Vec3 &v)
 	{
 		return r * v;
 	}
@@ -65,31 +65,31 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	inline const q3HalfSpace q3Mul(const q3Transform &tx, const q3HalfSpace &p)
 	{
-		q3Vec3 origin = p.Origin();
+		Vec3 origin = p.Origin();
 		origin = q3Mul(tx, origin);
-		q3Vec3 normal = q3Mul(tx.rotation, p.normal);
+		Vec3 normal = q3Mul(tx.rotation, p.normal);
 		
 		return q3HalfSpace(normal, q3Dot(origin, normal));
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3HalfSpace q3Mul(const q3Transform &tx, const q3Vec3 &scale, const q3HalfSpace &p)
+	inline const q3HalfSpace q3Mul(const q3Transform &tx, const Vec3 &scale, const q3HalfSpace &p)
 	{
-		q3Vec3 origin = p.Origin();
+		Vec3 origin = p.Origin();
 		origin = q3Mul(tx, scale, origin);
-		q3Vec3 normal = q3Mul(tx.rotation, p.normal);
+		Vec3 normal = q3Mul(tx.rotation, p.normal);
 		
 		return q3HalfSpace(normal, q3Dot(origin, normal));
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3MulT(const q3Transform &tx, const q3Vec3 &v)
+	inline const Vec3 q3MulT(const q3Transform &tx, const Vec3 &v)
 	{
 		return q3Transpose(tx.rotation) * (v - tx.position);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3MulT(const q3Mat3 &r, const q3Vec3 &v)
+	inline const Vec3 q3MulT(const q3Mat3 &r, const Vec3 &v)
 	{
 		return q3Transpose(r) * v;
 	}
@@ -112,9 +112,9 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	inline const q3HalfSpace q3MulT(const q3Transform &tx, const q3HalfSpace &p)
 	{
-		q3Vec3 origin = p.normal * p.distance;
+		Vec3 origin = p.normal * p.distance;
 		origin = q3MulT(tx, origin);
-		q3Vec3 n = q3MulT(tx.rotation, p.normal);
+		Vec3 n = q3MulT(tx.rotation, p.normal);
 		return q3HalfSpace(n, q3Dot(origin, n));
 	}
 

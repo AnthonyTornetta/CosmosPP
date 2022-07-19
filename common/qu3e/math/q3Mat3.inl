@@ -34,7 +34,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Mat3 q3Rotate(const q3Vec3 &x, const q3Vec3 &y, const q3Vec3 &z)
+	inline const q3Mat3 q3Rotate(const Vec3 &x, const Vec3 &y, const Vec3 &z)
 	{
 		return q3Mat3(x, y, z);
 	}
@@ -76,11 +76,11 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Mat3 q3OuterProduct(const q3Vec3 &u, const q3Vec3 &v)
+	inline const q3Mat3 q3OuterProduct(const Vec3 &u, const Vec3 &v)
 	{
-		q3Vec3 a = v * u.x;
-		q3Vec3 b = v * u.y;
-		q3Vec3 c = v * u.z;
+		Vec3 a = v * u.x;
+		Vec3 b = v * u.y;
+		Vec3 c = v * u.z;
 		
 		return q3Mat3(
 				a.x, a.y, a.z,
@@ -90,10 +90,10 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Mat3 q3Covariance(q3Vec3 *points, u32 numPoints)
+	inline const q3Mat3 q3Covariance(Vec3 *points, u32 numPoints)
 	{
 		r32 invNumPoints = r32(1.0) / r32(numPoints);
-		q3Vec3 c = q3Vec3(r32(0.0), r32(0.0), r32(0.0));
+		Vec3 c = Vec3(r32(0.0), r32(0.0), r32(0.0));
 		
 		for (u32 i = 0; i < numPoints; ++i)
 			c += points[i];
@@ -105,7 +105,7 @@ namespace q3
 		
 		for (u32 i = 0; i < numPoints; ++i)
 		{
-			q3Vec3 p = points[i] - c;
+			Vec3 p = points[i] - c;
 			
 			m00 += p.x * p.x;
 			m11 += p.y * p.y;
@@ -129,7 +129,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	inline const q3Mat3 q3Inverse(const q3Mat3 &m)
 	{
-		q3Vec3 tmp0, tmp1, tmp2;
+		Vec3 tmp0, tmp1, tmp2;
 		r32 detinv;
 		
 		tmp0 = q3Cross(m.ey, m.ez);

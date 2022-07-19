@@ -37,7 +37,7 @@
 #include "source/world/ClientWorld.h"
 #include "source/netty/Constants.h"
 
-inline Ogre::Vector3 to(const q3::q3Vec3& v)
+inline Ogre::Vector3 to(const q3::Vec3& v)
 {
 	return {v.x, v.y, v.z};
 }
@@ -191,12 +191,12 @@ void MyTestApp::setup()
 		using namespace q3;
 		
 		q3::q3BodyDef bdef;
-		bdef.position = q3::q3Vec3(0, 10, -20);
+		bdef.position = q3::Vec3(0, 10, -20);
 		bdef.bodyType = q3::eDynamicBody;
 		
 		
 		q3::q3BodyDef plane;
-		plane.position = q3::q3Vec3(2.5f, -10, -20);
+		plane.position = q3::Vec3(2.5f, -10, -20);
 		plane.bodyType = q3::eStaticBody;
 		
 		mainBody = scene.CreateBody(bdef);
@@ -299,66 +299,6 @@ void MyTestApp::setup()
 //}
 
 //#define TESTING
-
-#ifdef TESTING
-
-#include "tests/TestECS.h"
-
-int main()
-{
-	testMain();
-}
-
-#else
-
-int main232323()
-{
-	using namespace Cosmos;
-	
-	ECSWorld world;
-	
-	Entity* structEnt = world.createEntity();
-	Entity* e2 = world.createEntity();
-	
-	e2->addComponent(new Chunk());
-	
-	structEnt->addComponent(new Chunk());
-	
-	structEnt->addComponent(new Structure(10, 10, 10));
-	
-	world.addSystem(new ConstSystem(new HasQuery(Chunk::STATIC_ID()), [](const ECSWorld& world, ConstQueryIterator itr)
-	{
-		printf("SYSTEM RAN\n");
-		
-		for(const Entity* ent : itr)
-		{
-			printf("FOUND AN ENTITY\n");
-		}
-	
-//		auto x = entity.getComponents(Chunk::STATIC_ID());
-//		printf("%u count\n", (unsigned int) x.size());
-//		printf("Found chunks!!\n");
-	}));
-	
-	world.addMutSystem(new MutSystem (new HasQuery(Chunk::STATIC_ID()), [](ECSWorld& world, MutQueryIterator itr)
-	{
-		for(Entity* x : itr)
-		{
-			printf("MUT FOUND AN ENTITY\n");
-		}
-	}));
-	
-	for(int i = 0; i < 10; i++)
-	{
-		world.runSystems();
-	}
-	
-	world.destroyEntity(structEnt);
-	
-	return 0;
-}
-#endif
-
 
 int main23423(int argc, char *argv[])
 {

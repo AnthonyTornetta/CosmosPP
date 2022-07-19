@@ -44,7 +44,7 @@ namespace q3
 	const r32 q3PI = r32(3.14159265);
 }
 
-#include "q3Vec3.h"
+#include "Vec3.h"
 #include "q3Mat3.h"
 #include "q3Quaternion.h"
 

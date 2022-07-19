@@ -25,7 +25,7 @@ namespace q3
 // Common
 //--------------------------------------------------------------------------------------------------
 // http://box2d.org/2014/02/computing-a-basis/
-	inline void q3ComputeBasis(const q3Vec3 &a, q3Vec3 *__restrict b, q3Vec3 *__restrict c)
+	inline void q3ComputeBasis(const Vec3 &a, Vec3 *__restrict b, Vec3 *__restrict c)
 	{
 		// Suppose vector a has all equal components and is a unit vector: a = (s, s, s)
 		// Then 3*s*s = 1, s = sqrt(1/3) = 0.57735027. This means that at least one component of a
@@ -70,7 +70,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline bool q3AABB::Contains(const q3Vec3 &point) const
+	inline bool q3AABB::Contains(const Vec3 &point) const
 	{
 		return
 				min.x <= point.x &&
@@ -105,7 +105,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // q3RaycastData
 //--------------------------------------------------------------------------------------------------
-	inline void q3RaycastData::Set(const q3Vec3 &startPoint, const q3Vec3 &direction, r32 endPointTime)
+	inline void q3RaycastData::Set(const Vec3 &startPoint, const Vec3 &direction, r32 endPointTime)
 	{
 		start = startPoint;
 		dir = direction;
@@ -113,8 +113,8 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3RaycastData::GetImpactPoint() const
+	inline const Vec3 q3RaycastData::GetImpactPoint() const
 	{
-		return q3Vec3(start + dir * toi);
+		return Vec3(start + dir * toi);
 	}
 }

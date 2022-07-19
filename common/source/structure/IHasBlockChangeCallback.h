@@ -12,6 +12,8 @@ namespace Cosmos
 	class IHasBlockChangeCallback
 	{
 	public:
+		virtual ~IHasBlockChangeCallback() = default;
+		
 		virtual void onBlockUpdate(Structure& s, const Block& oldBlock, int x, int y, int z) = 0;
 	};
 }

@@ -20,7 +20,7 @@ namespace Cosmos
 	template<class T>
 	void deleteObservers(std::unordered_set<void*>& deletedObservers, std::vector<Ownership<T>> vec)
 	{
-		for(auto &observer : vec)
+		for(Ownership<T> &observer : vec)
 		{
 			if(observer.shouldDelete())
 			{
@@ -90,11 +90,11 @@ namespace Cosmos
 	
 	void CosmosWorld::addStructureAddObserver(const Ownership<IAddStructureObserver>& o)
 	{
-		m_addStructureObservers.push_back(o);
+		m_addStructureObservers.emplace_back(o);
 	}
 	
 	void CosmosWorld::addStructureRemoveObserver(const Ownership<IRemoveStructureObserver> &o)
 	{
-		m_removeStructureObservers.push_back(o);
+		m_removeStructureObservers.emplace_back(o);
 	}
 }

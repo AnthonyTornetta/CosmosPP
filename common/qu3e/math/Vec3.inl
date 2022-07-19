@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------------------
-// q3Vec3.inl
+// Vec3.inl
 //
 //	Copyright (c) 2014 Randy Gaul http://www.randygaul.net
 //
@@ -21,32 +21,34 @@
 
 #include <cmath>
 
+#include "Vec3.h"
+
 namespace q3
 {
 //--------------------------------------------------------------------------------------------------
-// q3Vec3
+// Vec3
 //--------------------------------------------------------------------------------------------------
-	inline void q3Identity(q3Vec3 &v)
+	inline void q3Identity(Vec3 &v)
 	{
 		v.Set(r32(0.0), r32(0.0), r32(0.0));
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Mul(const q3Vec3 &a, const q3Vec3 &b)
+	inline const Vec3 q3Mul(const Vec3 &a, const Vec3 &b)
 	{
-		return q3Vec3(a.x * b.x, a.y * b.y, a.z * b.z);
+		return Vec3(a.x * b.x, a.y * b.y, a.z * b.z);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3Dot(const q3Vec3 &a, const q3Vec3 &b)
+	inline r32 q3Dot(const Vec3 &a, const Vec3 &b)
 	{
 		return a.x * b.x + a.y * b.y + a.z * b.z;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Cross(const q3Vec3 &a, const q3Vec3 &b)
+	inline const Vec3 q3Cross(const Vec3 &a, const Vec3 &b)
 	{
-		return q3Vec3(
+		return Vec3(
 				(a.y * b.z) - (b.y * a.z),
 				(b.x * a.z) - (a.x * b.z),
 				(a.x * b.y) - (b.x * a.y)
@@ -54,19 +56,19 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3Length(const q3Vec3 &v)
+	inline r32 q3Length(const Vec3 &v)
 	{
 		return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3LengthSq(const q3Vec3 &v)
+	inline r32 q3LengthSq(const Vec3 &v)
 	{
 		return v.x * v.x + v.y * v.y + v.z * v.z;
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Normalize(const q3Vec3 &v)
+	inline const Vec3 q3Normalize(const Vec3 &v)
 	{
 		r32 l = q3Length(v);
 		
@@ -80,7 +82,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3Distance(const q3Vec3 &a, const q3Vec3 &b)
+	inline r32 q3Distance(const Vec3 &a, const Vec3 &b)
 	{
 		r32 xp = a.x - b.x;
 		r32 yp = a.y - b.y;
@@ -90,7 +92,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline r32 q3DistanceSq(const q3Vec3 &a, const q3Vec3 &b)
+	inline r32 q3DistanceSq(const Vec3 &a, const Vec3 &b)
 	{
 		r32 xp = a.x - b.x;
 		r32 yp = a.y - b.y;
@@ -100,31 +102,31 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Abs(const q3Vec3 &v)
+	inline const Vec3 q3Abs(const Vec3 &v)
 	{
-		return q3Vec3(q3Abs(v.x), q3Abs(v.y), q3Abs(v.z));
+		return Vec3(q3Abs(v.x), q3Abs(v.y), q3Abs(v.z));
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Min(const q3Vec3 &a, const q3Vec3 &b)
+	inline const Vec3 q3Min(const Vec3 &a, const Vec3 &b)
 	{
-		return q3Vec3(q3Min(a.x, b.x), q3Min(a.y, b.y), q3Min(a.z, b.z));
+		return Vec3(q3Min(a.x, b.x), q3Min(a.y, b.y), q3Min(a.z, b.z));
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const q3Vec3 q3Max(const q3Vec3 &a, const q3Vec3 &b)
+	inline const Vec3 q3Max(const Vec3 &a, const Vec3 &b)
 	{
-		return q3Vec3(q3Max(a.x, b.x), q3Max(a.y, b.y), q3Max(a.z, b.z));
+		return Vec3(q3Max(a.x, b.x), q3Max(a.y, b.y), q3Max(a.z, b.z));
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const r32 q3MinPerElem(const q3Vec3 &a)
+	inline const r32 q3MinPerElem(const Vec3 &a)
 	{
 		return q3Min(a.x, q3Min(a.y, a.z));
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline const r32 q3MaxPerElem(const q3Vec3 &a)
+	inline const r32 q3MaxPerElem(const Vec3 &a)
 	{
 		return q3Max(a.x, q3Max(a.y, a.z));
 	}

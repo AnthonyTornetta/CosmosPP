@@ -31,7 +31,7 @@
 #include "scene/q3Scene.h"
 #include "dynamics/q3Body.h"
 #include "collision/q3Box.h"
-#include "math/q3Vec3.h"
+#include "math/Vec3.h"
 #include "math/q3Mat3.h"
 #include "math/q3Quaternion.h"
 #include "math/q3Transform.h"

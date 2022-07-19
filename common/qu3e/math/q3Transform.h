@@ -37,7 +37,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 	struct q3Transform
 	{
-		q3Vec3 position;
+		Vec3 position;
 		q3Mat3 rotation;
 	};
 }

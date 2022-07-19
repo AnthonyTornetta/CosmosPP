@@ -81,7 +81,7 @@ namespace q3
 	class q3Scene
 	{
 	public:
-		q3Scene(r32 dt, const q3Vec3 &gravity = q3Vec3(r32(0.0), r32(0.0), r32(0.0)), i32 iterations = 20);
+		q3Scene(r32 dt, const Vec3 &gravity = Vec3(r32(0.0), r32(0.0), r32(0.0)), i32 iterations = 20);
 		
 		~q3Scene();
 		
@@ -121,9 +121,9 @@ namespace q3
 		void Render(q3Render *render) const;
 		
 		// Gets and sets the global gravity vector used during integration
-		const q3Vec3 GetGravity() const;
+		const Vec3 GetGravity() const;
 		
-		void SetGravity(const q3Vec3 &gravity);
+		void SetGravity(const Vec3 &gravity);
 		
 		// Removes all bodies from the scene.
 		void Shutdown();
@@ -144,7 +144,7 @@ namespace q3
 		void QueryAABB(q3QueryCallback *cb, const q3AABB &aabb) const;
 		
 		// Query the world to find any shapes intersecting a world space point.
-		void QueryPoint(q3QueryCallback *cb, const q3Vec3 &point) const;
+		void QueryPoint(q3QueryCallback *cb, const Vec3 &point) const;
 		
 		// Query the world to find any shapes intersecting a ray.
 		void RayCast(q3QueryCallback *cb, q3RaycastData &rayCast) const;
@@ -167,7 +167,7 @@ namespace q3
 		q3Stack m_stack;
 		q3Heap m_heap;
 		
-		q3Vec3 m_gravity;
+		Vec3 m_gravity;
 		r32 m_dt;
 		i32 m_iterations;
 		

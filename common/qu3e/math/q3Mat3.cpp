@@ -25,6 +25,7 @@
 //--------------------------------------------------------------------------------------------------
 
 #include <cassert>
+#include <complex>
 #include "q3Mat3.h"
 
 namespace q3
@@ -43,7 +44,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	q3Mat3::q3Mat3(const q3Vec3 &_x, const q3Vec3 &_y, const q3Vec3 &_z)
+	q3Mat3::q3Mat3(const Vec3 &_x, const Vec3 &_y, const Vec3 &_z)
 			: ex(_x), ey(_y), ez(_z)
 	{
 	}
@@ -57,7 +58,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Mat3::Set(const q3Vec3 &axis, r32 angle)
+	void q3Mat3::Set(const Vec3 &axis, r32 angle)
 	{
 		r32 s = std::sin(angle);
 		r32 c = std::cos(angle);
@@ -77,7 +78,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Mat3::SetRows(const q3Vec3 &x, const q3Vec3 &y, const q3Vec3 &z)
+	void q3Mat3::SetRows(const Vec3 &x, const Vec3 &y, const Vec3 &z)
 	{
 		ex = x;
 		ey = y;
@@ -134,7 +135,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	q3Vec3 &q3Mat3::operator[](u32 index)
+	Vec3 &q3Mat3::operator[](u32 index)
 	{
 		switch (index)
 		{
@@ -151,7 +152,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 &q3Mat3::operator[](u32 index) const
+	const Vec3 &q3Mat3::operator[](u32 index) const
 	{
 		switch (index)
 		{
@@ -168,27 +169,27 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Mat3::Column0() const
+	const Vec3 q3Mat3::Column0() const
 	{
-		return q3Vec3(ex.x, ey.x, ez.x);
+		return Vec3(ex.x, ey.x, ez.x);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Mat3::Column1() const
+	const Vec3 q3Mat3::Column1() const
 	{
-		return q3Vec3(ex.y, ey.y, ez.y);
+		return Vec3(ex.y, ey.y, ez.y);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Mat3::Column2() const
+	const Vec3 q3Mat3::Column2() const
 	{
-		return q3Vec3(ex.z, ey.z, ez.z);
+		return Vec3(ex.z, ey.z, ez.z);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	const q3Vec3 q3Mat3::operator*(const q3Vec3 &rhs) const
+	const Vec3 q3Mat3::operator*(const Vec3 &rhs) const
 	{
-		return q3Vec3(
+		return Vec3(
 				ex.x * rhs.x + ey.x * rhs.y + ez.x * rhs.z,
 				ex.y * rhs.x + ey.y * rhs.y + ez.y * rhs.z,
 				ex.z * rhs.x + ey.z * rhs.y + ez.z * rhs.z

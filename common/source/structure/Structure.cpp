@@ -9,6 +9,7 @@
 
 #include "../ecs/component/ComponentIDs.h"
 #include "../ecs/entity/Entity.h"
+#include "../utils/Ownership.h"
 
 namespace Cosmos
 {
@@ -55,9 +56,9 @@ namespace Cosmos
 		
 		m_chunks[chunkIndex].blockAt(xx, yy, zz, b);
 		
-		for(auto *callback : m_BlockCallbacks)
+		for(auto &callback : m_blockCallbacks)
 		{
-			callback->onBlockUpdate(*this, old, x, y, z);
+			callback.value()->onBlockUpdate(*this, old, x, y, z);
 		}
 	}
 	
@@ -73,6 +74,11 @@ namespace Cosmos
 		assert(cz >= 0 && cx < chunksLength());
 		
 		return m_chunks[flatten(cx, cy, cz, chunksWidth(), chunksHeight())];
+	}
+	
+	void Structure::addBlockChangeObserver(const Ownership <IHasBlockChangeCallback> &callback)
+	{
+		m_blockCallbacks.push_back(callback);
 	}
 }
 

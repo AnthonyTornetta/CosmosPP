@@ -44,13 +44,13 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	q3Quaternion::q3Quaternion(const q3Vec3 &axis, r32 radians)
+	q3Quaternion::q3Quaternion(const Vec3 &axis, r32 radians)
 	{
 		Set(axis, radians);
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Quaternion::Set(const q3Vec3 &axis, r32 radians)
+	void q3Quaternion::Set(const Vec3 &axis, r32 radians)
 	{
 		r32 halfAngle = r32(0.5) * radians;
 		r32 s = std::sin(halfAngle);
@@ -61,7 +61,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Quaternion::ToAxisAngle(q3Vec3 *axis, r32 *angle) const
+	void q3Quaternion::ToAxisAngle(Vec3 *axis, r32 *angle) const
 	{
 		assert(w <= r32(1.0));
 		
@@ -80,7 +80,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3Quaternion::Integrate(const q3Vec3 &dv, r32 dt)
+	void q3Quaternion::Integrate(const Vec3 &dv, r32 dt)
 	{
 		q3Quaternion q(dv.x * dt, dv.y * dt, dv.z * dt, r32(0.0));
 		
@@ -136,9 +136,9 @@ namespace q3
 		r32 qzqw2 = w * qz2;
 		
 		return q3Mat3(
-				q3Vec3(r32(1.0) - qyqy2 - qzqz2, qxqy2 + qzqw2, qxqz2 - qyqw2),
-				q3Vec3(qxqy2 - qzqw2, r32(1.0) - qxqx2 - qzqz2, qyqz2 + qxqw2),
-				q3Vec3(qxqz2 + qyqw2, qyqz2 - qxqw2, r32(1.0) - qxqx2 - qyqy2)
+				Vec3(r32(1.0) - qyqy2 - qzqz2, qxqy2 + qzqw2, qxqz2 - qyqw2),
+				Vec3(qxqy2 - qzqw2, r32(1.0) - qxqx2 - qzqz2, qyqz2 + qxqw2),
+				Vec3(qxqz2 + qyqw2, qyqz2 - qxqw2, r32(1.0) - qxqx2 - qyqy2)
 		);
 	}
 }

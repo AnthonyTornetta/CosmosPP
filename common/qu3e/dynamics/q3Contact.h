@@ -82,7 +82,7 @@ namespace q3
 	
 	struct q3Contact
 	{
-		q3Vec3 position;            // World coordinate of contact
+		Vec3 position;            // World coordinate of contact
 		r32 penetration;            // Depth of penetration from collision
 		r32 normalImpulse;            // Accumulated normal impulse
 		r32 tangentImpulse[2];    // Accumulated friction impulse
@@ -100,8 +100,8 @@ namespace q3
 		q3Box *A;
 		q3Box *B;
 		
-		q3Vec3 normal;                // From A to B
-		q3Vec3 tangentVectors[2];    // Tangent vectors
+		Vec3 normal;                // From A to B
+		Vec3 tangentVectors[2];    // Tangent vectors
 		q3Contact contacts[8];
 		i32 contactCount;
 		

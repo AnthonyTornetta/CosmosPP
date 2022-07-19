@@ -72,18 +72,18 @@ namespace q3
 		{
 			q3ContactConstraintState *cs = m_contacts + i;
 			
-			q3Vec3 vA = m_velocities[cs->indexA].v;
-			q3Vec3 wA = m_velocities[cs->indexA].w;
-			q3Vec3 vB = m_velocities[cs->indexB].v;
-			q3Vec3 wB = m_velocities[cs->indexB].w;
+			Vec3 vA = m_velocities[cs->indexA].v;
+			Vec3 wA = m_velocities[cs->indexA].w;
+			Vec3 vB = m_velocities[cs->indexB].v;
+			Vec3 wB = m_velocities[cs->indexB].w;
 			
 			for (i32 j = 0; j < cs->contactCount; ++j)
 			{
 				q3ContactState *c = cs->contacts + j;
 				
 				// Precalculate JM^-1JT for contact and friction constraints
-				q3Vec3 raCn = q3Cross(c->ra, cs->normal);
-				q3Vec3 rbCn = q3Cross(c->rb, cs->normal);
+				Vec3 raCn = q3Cross(c->ra, cs->normal);
+				Vec3 rbCn = q3Cross(c->rb, cs->normal);
 				r32 nm = cs->mA + cs->mB;
 				r32 tm[2];
 				tm[0] = nm;
@@ -94,8 +94,8 @@ namespace q3
 				
 				for (i32 i = 0; i < 2; ++i)
 				{
-					q3Vec3 raCt = q3Cross(cs->tangentVectors[i], c->ra);
-					q3Vec3 rbCt = q3Cross(cs->tangentVectors[i], c->rb);
+					Vec3 raCt = q3Cross(cs->tangentVectors[i], c->ra);
+					Vec3 rbCt = q3Cross(cs->tangentVectors[i], c->rb);
 					tm[i] += q3Dot(raCt, cs->iA * raCt) + q3Dot(rbCt, cs->iB * rbCt);
 					c->tangentMass[i] = q3Invert(tm[i]);
 				}
@@ -104,7 +104,7 @@ namespace q3
 				c->bias = -Q3_BAUMGARTE * (r32(1.0) / dt) * q3Min(r32(0.0), c->penetration + Q3_PENETRATION_SLOP);
 				
 				// Warm start contact
-				q3Vec3 P = cs->normal * c->normalImpulse;
+				Vec3 P = cs->normal * c->normalImpulse;
 				
 				if (m_enableFriction)
 				{
@@ -139,17 +139,17 @@ namespace q3
 		{
 			q3ContactConstraintState *cs = m_contacts + i;
 			
-			q3Vec3 vA = m_velocities[cs->indexA].v;
-			q3Vec3 wA = m_velocities[cs->indexA].w;
-			q3Vec3 vB = m_velocities[cs->indexB].v;
-			q3Vec3 wB = m_velocities[cs->indexB].w;
+			Vec3 vA = m_velocities[cs->indexA].v;
+			Vec3 wA = m_velocities[cs->indexA].w;
+			Vec3 vB = m_velocities[cs->indexB].v;
+			Vec3 wB = m_velocities[cs->indexB].w;
 			
 			for (i32 j = 0; j < cs->contactCount; ++j)
 			{
 				q3ContactState *c = cs->contacts + j;
 				
 				// relative velocity at contact
-				q3Vec3 dv = vB + q3Cross(wB, c->rb) - vA - q3Cross(wA, c->ra);
+				Vec3 dv = vB + q3Cross(wB, c->rb) - vA - q3Cross(wA, c->ra);
 				
 				// Friction
 				if (m_enableFriction)
@@ -167,7 +167,7 @@ namespace q3
 						lambda = c->tangentImpulse[i] - oldPT;
 						
 						// Apply friction impulse
-						q3Vec3 impulse = cs->tangentVectors[i] * lambda;
+						Vec3 impulse = cs->tangentVectors[i] * lambda;
 						vA -= impulse * cs->mA;
 						wA -= cs->iA * q3Cross(c->ra, impulse);
 						
@@ -192,7 +192,7 @@ namespace q3
 					lambda = c->normalImpulse - tempPN;
 					
 					// Apply impulse
-					q3Vec3 impulse = cs->normal * lambda;
+					Vec3 impulse = cs->normal * lambda;
 					vA -= impulse * cs->mA;
 					wA -= cs->iA * q3Cross(c->ra, impulse);
 					

@@ -4,6 +4,7 @@
 
 #include <map>
 #include "source/world/CosmosWorld.h"
+#include "source/structure/IHasBlockChangeCallback.h"
 
 #include "../rendering/StructureRenderData.h"
 
@@ -22,6 +23,7 @@ namespace Cosmos
 		
 	public:
 		ClientWorld(Ogre::SceneManager* mgr);
+		~ClientWorld() override = default;
 		
 		void update() override;
 		

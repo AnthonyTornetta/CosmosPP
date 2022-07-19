@@ -8,6 +8,7 @@
 #include <thread>
 #include "../../qu3e/q3.h"
 #include "../utils/Ownership.h"
+#include <unordered_set>
 
 namespace Cosmos
 {
@@ -21,7 +22,7 @@ namespace Cosmos
 		std::vector<Structure*> m_structures;
 		
 		std::vector<std::unique_ptr<std::thread>> m_threads;
-		
+
 		std::vector<Ownership<IAddStructureObserver>> m_addStructureObservers;
 		std::vector<Ownership<IRemoveStructureObserver>> m_removeStructureObservers;
 		

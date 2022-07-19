@@ -45,8 +45,8 @@ namespace q3
 	
 	struct q3VelocityState
 	{
-		q3Vec3 w;
-		q3Vec3 v;
+		Vec3 w;
+		Vec3 v;
 	};
 	
 	struct q3Island
@@ -70,7 +70,7 @@ namespace q3
 		i32 m_contactCapacity;
 		
 		r32 m_dt;
-		q3Vec3 m_gravity;
+		Vec3 m_gravity;
 		i32 m_iterations;
 		
 		bool m_allowSleep;

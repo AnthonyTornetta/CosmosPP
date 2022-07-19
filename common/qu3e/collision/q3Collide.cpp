@@ -33,7 +33,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // qBoxtoBox
 //--------------------------------------------------------------------------------------------------
-	inline bool q3TrackFaceAxis(i32 *axis, i32 n, r32 s, r32 *sMax, const q3Vec3 &normal, q3Vec3 *axisNormal)
+	inline bool q3TrackFaceAxis(i32 *axis, i32 n, r32 s, r32 *sMax, const Vec3 &normal, Vec3 *axisNormal)
 	{
 		if (s > r32(0.0))
 			return true;
@@ -49,7 +49,7 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	inline bool q3TrackEdgeAxis(i32 *axis, i32 n, r32 s, r32 *sMax, const q3Vec3 &normal, q3Vec3 *axisNormal)
+	inline bool q3TrackEdgeAxis(i32 *axis, i32 n, r32 s, r32 *sMax, const Vec3 &normal, Vec3 *axisNormal)
 	{
 		if (s > r32(0.0))
 			return true;
@@ -75,13 +75,13 @@ namespace q3
 			f.key = ~0;
 		}
 		
-		q3Vec3 v;
+		Vec3 v;
 		q3FeaturePair f;
 	};
 
 //--------------------------------------------------------------------------------------------------
-	void q3ComputeReferenceEdgesAndBasis(const q3Vec3 &eR, const q3Transform &rtx, q3Vec3 n, i32 axis, u8 *out,
-										 q3Mat3 *basis, q3Vec3 *e)
+	void q3ComputeReferenceEdgesAndBasis(const Vec3 &eR, const q3Transform &rtx, Vec3 n, i32 axis, u8 *out,
+										 q3Mat3 *basis, Vec3 *e)
 	{
 		n = q3MulT(rtx.rotation, n);
 		
@@ -159,10 +159,10 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3ComputeIncidentFace(const q3Transform &itx, const q3Vec3 &e, q3Vec3 n, q3ClipVertex *out)
+	void q3ComputeIncidentFace(const q3Transform &itx, const Vec3 &e, Vec3 n, q3ClipVertex *out)
 	{
 		n = -q3MulT(itx.rotation, n);
-		q3Vec3 absN = q3Abs(n);
+		Vec3 absN = q3Abs(n);
 		
 		if (absN.x > absN.y && absN.x > absN.z)
 		{
@@ -334,7 +334,7 @@ namespace q3
 //--------------------------------------------------------------------------------------------------
 // Resources (also see q3BoxtoBox's resources):
 // http://www.randygaul.net/2013/10/27/sutherland-hodgman-clipping/
-	i32 q3Clip(const q3Vec3 &rPos, const q3Vec3 &e, u8 *clipEdges, const q3Mat3 &basis, q3ClipVertex *incident,
+	i32 q3Clip(const Vec3 &rPos, const Vec3 &e, u8 *clipEdges, const q3Mat3 &basis, q3ClipVertex *incident,
 			   q3ClipVertex *outVerts, r32 *outDepths)
 	{
 		i32 inCount = 4;
@@ -383,11 +383,11 @@ namespace q3
 
 //--------------------------------------------------------------------------------------------------
 	inline void
-	q3EdgesContact(q3Vec3 *CA, q3Vec3 *CB, const q3Vec3 &PA, const q3Vec3 &QA, const q3Vec3 &PB, const q3Vec3 &QB)
+	q3EdgesContact(Vec3 *CA, Vec3 *CB, const Vec3 &PA, const Vec3 &QA, const Vec3 &PB, const Vec3 &QB)
 	{
-		q3Vec3 DA = QA - PA;
-		q3Vec3 DB = QB - PB;
-		q3Vec3 r = PA - PB;
+		Vec3 DA = QA - PA;
+		Vec3 DB = QB - PB;
+		Vec3 r = PA - PB;
 		r32 a = q3Dot(DA, DA);
 		r32 e = q3Dot(DB, DB);
 		r32 f = q3Dot(DB, r);
@@ -404,11 +404,11 @@ namespace q3
 	}
 
 //--------------------------------------------------------------------------------------------------
-	void q3SupportEdge(const q3Transform &tx, const q3Vec3 &e, q3Vec3 n, q3Vec3 *aOut, q3Vec3 *bOut)
+	void q3SupportEdge(const q3Transform &tx, const Vec3 &e, Vec3 n, Vec3 *aOut, Vec3 *bOut)
 	{
 		n = q3MulT(tx.rotation, n);
-		q3Vec3 absN = q3Abs(n);
-		q3Vec3 a, b;
+		Vec3 absN = q3Abs(n);
+		Vec3 a, b;
 		
 		// x > y
 		if (absN.x > absN.y)
@@ -474,8 +474,8 @@ namespace q3
 		q3Transform bL = b->local;
 		atx = q3Mul(atx, aL);
 		btx = q3Mul(btx, bL);
-		q3Vec3 eA = a->e;
-		q3Vec3 eB = b->e;
+		Vec3 eA = a->e;
+		Vec3 eB = b->e;
 		
 		// B's frame in A's space
 		q3Mat3 C = q3Transpose(atx.rotation) * btx.rotation;
@@ -496,7 +496,7 @@ namespace q3
 		}
 		
 		// Vector from center A to center B in A's space
-		q3Vec3 t = q3MulT(atx.rotation, btx.position - atx.position);
+		Vec3 t = q3MulT(atx.rotation, btx.position - atx.position);
 		
 		// Query states
 		r32 s;
@@ -506,9 +506,9 @@ namespace q3
 		i32 aAxis = ~0;
 		i32 bAxis = ~0;
 		i32 eAxis = ~0;
-		q3Vec3 nA;
-		q3Vec3 nB;
-		q3Vec3 nE;
+		Vec3 nA;
+		Vec3 nB;
+		Vec3 nE;
 		
 		// Face axis checks
 		
@@ -552,63 +552,63 @@ namespace q3
 			rA = eA.y * absC[0][2] + eA.z * absC[0][1];
 			rB = eB.y * absC[2][0] + eB.z * absC[1][0];
 			s = q3Abs(t.z * C[0][1] - t.y * C[0][2]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 6, s, &eMax, q3Vec3(r32(0.0), -C[0][2], C[0][1]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 6, s, &eMax, Vec3(r32(0.0), -C[0][2], C[0][1]), &nE))
 				return;
 			
 			// Cross( a.x, b.y )
 			rA = eA.y * absC[1][2] + eA.z * absC[1][1];
 			rB = eB.x * absC[2][0] + eB.z * absC[0][0];
 			s = q3Abs(t.z * C[1][1] - t.y * C[1][2]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 7, s, &eMax, q3Vec3(r32(0.0), -C[1][2], C[1][1]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 7, s, &eMax, Vec3(r32(0.0), -C[1][2], C[1][1]), &nE))
 				return;
 			
 			// Cross( a.x, b.z )
 			rA = eA.y * absC[2][2] + eA.z * absC[2][1];
 			rB = eB.x * absC[1][0] + eB.y * absC[0][0];
 			s = q3Abs(t.z * C[2][1] - t.y * C[2][2]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 8, s, &eMax, q3Vec3(r32(0.0), -C[2][2], C[2][1]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 8, s, &eMax, Vec3(r32(0.0), -C[2][2], C[2][1]), &nE))
 				return;
 			
 			// Cross( a.y, b.x )
 			rA = eA.x * absC[0][2] + eA.z * absC[0][0];
 			rB = eB.y * absC[2][1] + eB.z * absC[1][1];
 			s = q3Abs(t.x * C[0][2] - t.z * C[0][0]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 9, s, &eMax, q3Vec3(C[0][2], r32(0.0), -C[0][0]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 9, s, &eMax, Vec3(C[0][2], r32(0.0), -C[0][0]), &nE))
 				return;
 			
 			// Cross( a.y, b.y )
 			rA = eA.x * absC[1][2] + eA.z * absC[1][0];
 			rB = eB.x * absC[2][1] + eB.z * absC[0][1];
 			s = q3Abs(t.x * C[1][2] - t.z * C[1][0]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 10, s, &eMax, q3Vec3(C[1][2], r32(0.0), -C[1][0]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 10, s, &eMax, Vec3(C[1][2], r32(0.0), -C[1][0]), &nE))
 				return;
 			
 			// Cross( a.y, b.z )
 			rA = eA.x * absC[2][2] + eA.z * absC[2][0];
 			rB = eB.x * absC[1][1] + eB.y * absC[0][1];
 			s = q3Abs(t.x * C[2][2] - t.z * C[2][0]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 11, s, &eMax, q3Vec3(C[2][2], r32(0.0), -C[2][0]), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 11, s, &eMax, Vec3(C[2][2], r32(0.0), -C[2][0]), &nE))
 				return;
 			
 			// Cross( a.z, b.x )
 			rA = eA.x * absC[0][1] + eA.y * absC[0][0];
 			rB = eB.y * absC[2][2] + eB.z * absC[1][2];
 			s = q3Abs(t.y * C[0][0] - t.x * C[0][1]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 12, s, &eMax, q3Vec3(-C[0][1], C[0][0], r32(0.0)), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 12, s, &eMax, Vec3(-C[0][1], C[0][0], r32(0.0)), &nE))
 				return;
 			
 			// Cross( a.z, b.y )
 			rA = eA.x * absC[1][1] + eA.y * absC[1][0];
 			rB = eB.x * absC[2][2] + eB.z * absC[0][2];
 			s = q3Abs(t.y * C[1][0] - t.x * C[1][1]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 13, s, &eMax, q3Vec3(-C[1][1], C[1][0], r32(0.0)), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 13, s, &eMax, Vec3(-C[1][1], C[1][0], r32(0.0)), &nE))
 				return;
 			
 			// Cross( a.z, b.z )
 			rA = eA.x * absC[2][1] + eA.y * absC[2][0];
 			rB = eB.x * absC[1][2] + eB.y * absC[0][2];
 			s = q3Abs(t.y * C[2][0] - t.x * C[2][1]) - (rA + rB);
-			if (q3TrackEdgeAxis(&eAxis, 14, s, &eMax, q3Vec3(-C[2][1], C[2][0], r32(0.0)), &nE))
+			if (q3TrackEdgeAxis(&eAxis, 14, s, &eMax, Vec3(-C[2][1], C[2][0], r32(0.0)), &nE))
 				return;
 		}
 		
@@ -617,7 +617,7 @@ namespace q3
 		const r32 kAbsTol = r32(0.01);
 		i32 axis;
 		r32 sMax;
-		q3Vec3 n;
+		Vec3 n;
 		r32 faceMax = q3Max(aMax, bMax);
 		if (kRelTol * eMax > faceMax + kAbsTol)
 		{
@@ -649,8 +649,8 @@ namespace q3
 		{
 			q3Transform rtx;
 			q3Transform itx;
-			q3Vec3 eR;
-			q3Vec3 eI;
+			Vec3 eR;
+			Vec3 eI;
 			bool flip;
 			
 			if (axis < 3)
@@ -675,7 +675,7 @@ namespace q3
 			q3ComputeIncidentFace(itx, eI, n, incident);
 			u8 clipEdges[4];
 			q3Mat3 basis;
-			q3Vec3 e;
+			Vec3 e;
 			q3ComputeReferenceEdgesAndBasis(eR, rtx, n, axis, clipEdges, &basis, &e);
 			
 			// Clip the incident face against the reference face side planes
@@ -713,12 +713,12 @@ namespace q3
 			if (q3Dot(n, btx.position - atx.position) < r32(0.0))
 				n = -n;
 			
-			q3Vec3 PA, QA;
-			q3Vec3 PB, QB;
+			Vec3 PA, QA;
+			Vec3 PB, QB;
 			q3SupportEdge(atx, eA, n, &PA, &QA);
 			q3SupportEdge(btx, eB, -n, &PB, &QB);
 			
-			q3Vec3 CA, CB;
+			Vec3 CA, CB;
 			q3EdgesContact(&CA, &CB, PA, QA, PB, QB);
 			
 			m->normal = n;

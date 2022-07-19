@@ -27,7 +27,7 @@
 #ifndef Q3BOX_H
 #define Q3BOX_H
 
-#include "../math/q3Vec3.h"
+#include "../math/Vec3.h"
 #include "../math/q3Mat3.h"
 #include "../math/q3Transform.h"
 #include "../debug/q3Render.h"
@@ -40,7 +40,7 @@ namespace q3
 	struct q3MassData
 	{
 		q3Mat3 inertia;
-		q3Vec3 center;
+		Vec3 center;
 		r32 mass;
 	};
 
@@ -50,7 +50,7 @@ namespace q3
 	struct q3Box
 	{
 		q3Transform local;
-		q3Vec3 e; // extent, as in the extent of each OBB axis
+		Vec3 e; // extent, as in the extent of each OBB axis
 		
 		q3Box *next;
 		
@@ -69,7 +69,7 @@ namespace q3
 		
 		void SetSensor(bool isSensor);
 		
-		bool TestPoint(const q3Transform &tx, const q3Vec3 &p) const;
+		bool TestPoint(const q3Transform &tx, const Vec3 &p) const;
 		
 		bool Raycast(const q3Transform &tx, q3RaycastData *raycast) const;
 		
@@ -95,7 +95,7 @@ namespace q3
 			m_sensor = false;
 		}
 		
-		void Set(const q3Transform &tx, const q3Vec3 &extents);
+		void Set(const q3Transform &tx, const Vec3 &extents);
 		
 		void SetFriction(r32 friction);
 		
@@ -107,7 +107,7 @@ namespace q3
 	
 	private:
 		q3Transform m_tx;
-		q3Vec3 m_e;
+		Vec3 m_e;
 		
 		r32 m_friction;
 		r32 m_restitution;

@@ -74,15 +74,15 @@ namespace q3
 		// Removes all boxes from this body and the broadphase.
 		void RemoveAllBoxes();
 		
-		void ApplyLinearForce(const q3Vec3 &force);
+		void ApplyLinearForce(const Vec3 &force);
 		
-		void ApplyForceAtWorldPoint(const q3Vec3 &force, const q3Vec3 &point);
+		void ApplyForceAtWorldPoint(const Vec3 &force, const Vec3 &point);
 		
-		void ApplyLinearImpulse(const q3Vec3 &impulse);
+		void ApplyLinearImpulse(const Vec3 &impulse);
 		
-		void ApplyLinearImpulseAtWorldPoint(const q3Vec3 &impulse, const q3Vec3 &point);
+		void ApplyLinearImpulseAtWorldPoint(const Vec3 &impulse, const Vec3 &point);
 		
-		void ApplyTorque(const q3Vec3 &torque);
+		void ApplyTorque(const Vec3 &torque);
 		
 		void SetToAwake();
 		
@@ -94,23 +94,23 @@ namespace q3
 		
 		void SetGravityScale(r32 scale);
 		
-		const q3Vec3 GetLocalPoint(const q3Vec3 &p) const;
+		const Vec3 GetLocalPoint(const Vec3 &p) const;
 		
-		const q3Vec3 GetLocalVector(const q3Vec3 &v) const;
+		const Vec3 GetLocalVector(const Vec3 &v) const;
 		
-		const q3Vec3 GetWorldPoint(const q3Vec3 &p) const;
+		const Vec3 GetWorldPoint(const Vec3 &p) const;
 		
-		const q3Vec3 GetWorldVector(const q3Vec3 &v) const;
+		const Vec3 GetWorldVector(const Vec3 &v) const;
 		
-		const q3Vec3 GetLinearVelocity() const;
+		const Vec3 GetLinearVelocity() const;
 		
-		const q3Vec3 GetVelocityAtWorldPoint(const q3Vec3 &p) const;
+		const Vec3 GetVelocityAtWorldPoint(const Vec3 &p) const;
 		
-		void SetLinearVelocity(const q3Vec3 &v);
+		void SetLinearVelocity(const Vec3 &v);
 		
-		const q3Vec3 GetAngularVelocity() const;
+		const Vec3 GetAngularVelocity() const;
 		
-		void SetAngularVelocity(const q3Vec3 v);
+		void SetAngularVelocity(const Vec3 v);
 		
 		bool CanCollide(const q3Body *other) const;
 		
@@ -138,9 +138,9 @@ namespace q3
 		// non-physical behavior. Contacts are updated upon the next call to
 		// q3Scene::Step( ). Parameters are in world space. All body types
 		// can be updated.
-		void SetTransform(const q3Vec3 &position);
+		void SetTransform(const Vec3 &position);
 		
-		void SetTransform(const q3Vec3 &position, const q3Vec3 &axis, r32 angle);
+		void SetTransform(const Vec3 &position, const Vec3 &axis, r32 angle);
 		
 		// Used for debug rendering lines, triangles and basic lighting
 		void Render(q3Render *render) const;
@@ -173,14 +173,14 @@ namespace q3
 		q3Mat3 m_invInertiaWorld;
 		r32 m_mass;
 		r32 m_invMass;
-		q3Vec3 m_linearVelocity;
-		q3Vec3 m_angularVelocity;
-		q3Vec3 m_force;
-		q3Vec3 m_torque;
+		Vec3 m_linearVelocity;
+		Vec3 m_angularVelocity;
+		Vec3 m_force;
+		Vec3 m_torque;
 		q3Transform m_tx;
 		q3Quaternion m_q;
-		q3Vec3 m_localCenter;
-		q3Vec3 m_worldCenter;
+		Vec3 m_localCenter;
+		Vec3 m_worldCenter;
 		r32 m_sleepTime;
 		r32 m_gravityScale;
 		i32 m_layers;
@@ -246,11 +246,11 @@ namespace q3
 			angularDamping = r32(0.1);
 		}
 		
-		q3Vec3 axis;            // Initial world transformation.
+		Vec3 axis;            // Initial world transformation.
 		r32 angle;                // Initial world transformation. Radians.
-		q3Vec3 position;        // Initial world transformation.
-		q3Vec3 linearVelocity;    // Initial linear velocity in world space.
-		q3Vec3 angularVelocity;    // Initial angular velocity in world space.
+		Vec3 position;        // Initial world transformation.
+		Vec3 linearVelocity;    // Initial linear velocity in world space.
+		Vec3 angularVelocity;    // Initial angular velocity in world space.
 		r32 gravityScale;        // Convenient scale values for gravity x, y and z directions.
 		i32 layers;                // Bitmask of collision layers. Bodies matching at least one layer can collide.
 		void *userData;            // Use to store application specific data.
