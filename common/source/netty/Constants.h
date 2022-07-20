@@ -4,10 +4,7 @@
 
 #pragma once
 
-namespace Cosmos
+namespace Cosmos::Netty
 {
-	namespace Netty
-	{
-		constexpr unsigned int DEFAULT_PORT = 1337;
-	}
+	constexpr unsigned int DEFAULT_PORT = 1337;
 }

@@ -106,11 +106,12 @@ void sendPacket(ENetPeer* peer, const void* data, size_t data_size)
 }
 
 #include "source/netty/NettyRegistry.h"
-#include "source/netty/PacketLoader.h"
+#include "server/netty/ServerPacketLoader.h"
 
 int main()
 {
 	using namespace Cosmos::Netty;
+	using namespace Cosmos::Server::Netty;
 	NettyRegistry registry;
 	
 	loadPackets(registry);

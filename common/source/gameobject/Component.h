@@ -12,6 +12,10 @@ namespace Cosmos
 		
 		virtual int id() const = 0;
 		
+		virtual void onAdd() {
+
+		}
+		
 		static int generateID() {
 			static int next_id = 0;
 			

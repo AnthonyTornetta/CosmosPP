@@ -1,18 +1,14 @@
-//
-// Created by cornchip on 7/14/22.
-//
-
-#include "PacketLoader.h"
-#include "NettyRegistry.h"
+#include "ClientPacketLoader.h"
 
 #include <iostream>
-#include <string>
 #include <cstring>
 
-namespace Cosmos::Netty
+namespace Cosmos::Client::Netty
 {
-	void loadPackets(NettyRegistry& reg)
+	void loadPackets(Cosmos::Netty::NettyRegistry& reg)
 	{
+		using namespace Cosmos::Netty;
+		
 		reg.registerType(PacketIdentifiers::ID_TEST, [](const PacketData& data, ENetPeer& sender, NettyRegistry& registry)
 		{
 			std::cout << "GOT A PACKET WITH TYPE " << PacketIdentifiers::ID_TEST << "!!!\nData: ";
@@ -28,5 +24,6 @@ namespace Cosmos::Netty
 			
 			registry.deletePacketData(toSendData);
 		});
+		
 	}
 }

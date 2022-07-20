@@ -16,9 +16,9 @@
 
 #include "qu3e/q3.h"
 
-#include "source/rendering/RenderedStructure.h"
+#include "client/rendering/RenderedStructure.h"
 
-#include "source/cube.h"
+#include "client/cube.h"
 
 #include "source/structure/Dirty.h"
 #include "source/ecs/Ecs.h"
@@ -29,13 +29,14 @@
 #include <source/netty/NettyRegistry.h>
 #include <source/netty/PacketLoader.h>
 
-#include "source/rendering/RenderedStructure.h"
-#include "source/rendering/DirtyNeedsRendered.h"
-#include "source/rendering/DoingRendering.h"
-#include "source/rendering/NeedsOpenGLUpdated.h"
+#include "client/rendering/RenderedStructure.h"
+#include "client/rendering/DirtyNeedsRendered.h"
+#include "client/rendering/DoingRendering.h"
+#include "client/rendering/NeedsOpenGLUpdated.h"
 
-#include "source/world/ClientWorld.h"
+#include "client/world/ClientWorld.h"
 #include "source/netty/Constants.h"
+#include "client/netty/ClientPacketLoader.h"
 
 inline Ogre::Vector3 to(const q3::Vec3& v)
 {
@@ -358,6 +359,7 @@ int main23423(int argc, char *argv[])
 int main()
 {
 	using namespace Cosmos::Netty;
+	using namespace Cosmos::Client::Netty;
 	NettyRegistry registry;
 	
 	loadPackets(registry);
